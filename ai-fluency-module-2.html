@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- build: 2026081202 -->
+  <!-- build: 2026081204 -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Module 2 &mdash; Email with AI &middot; SF Knowledge Hub</title>
@@ -179,17 +179,58 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
   table.compare th,table.compare td{padding:8px 9px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+
+.auth-overlay{position:fixed;inset:0;background:rgba(18,33,46,.92);display:flex;
+  align-items:center;justify-content:center;z-index:9999;padding:20px}
+.auth-overlay[hidden]{display:none}
+.auth-box{background:#fff;border-radius:16px;padding:40px 36px;max-width:410px;width:100%;
+  text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.auth-logo{height:36px;margin:0 auto 18px;display:block}
+.auth-title{font-size:19px;font-weight:800;margin-bottom:8px}
+.auth-sub{font-size:14px;color:var(--muted);margin:0 0 24px;line-height:1.6}
+.auth-btn{width:100%;justify-content:center;padding:13px 18px}
+.auth-or{margin:14px 0 12px;color:#9aa7b3;font-size:11px;letter-spacing:1.1px;text-transform:uppercase}
+.auth-box input{width:100%;border:1px solid var(--line);border-radius:8px;padding:11px 13px;
+  font:inherit;font-size:15px;margin-bottom:8px;display:block}
+.auth-error{font-size:13px;color:var(--no);background:var(--no-tint);border:1px solid var(--no-line);
+  border-radius:6px;padding:9px 12px;margin-top:10px;text-align:left}
+.auth-error[hidden]{display:none}
+.signout{background:none;border:0;color:#fff;font:inherit;font-size:14px;opacity:.92;
+  cursor:pointer;text-decoration:underline;padding:0}
+.signout:hover{opacity:1}
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="wrap">
     <span class="brand">SF Knowledge Hub</span>
-    <a href="ai-fluency-dashboard.html?v=2026081202">Dashboard</a>
+    <a href="ai-fluency-dashboard.html?v=2026081204">Dashboard</a>
     <a href="../sf-certs-hub.html">Course map</a>
     <span class="who" id="whoami"></span>
+    <button type="button" class="signout" id="af-signout" hidden>Sign out</button>
   </div>
 </header>
+<div id="af-auth-overlay" class="auth-overlay">
+  <div class="auth-box">
+    <img src="../sourcefuse-logo.png" alt="SourceFuse" class="auth-logo"
+         onerror="this.style.display='none'">
+    <div class="auth-title">AI Fluency for Non-Technical People</div>
+    <p class="auth-sub">Sign in with your SourceFuse Google account to access the course
+    and save your progress.</p>
+    <button type="button" id="af-google-btn" class="btn auth-btn">
+      <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#fff"
+        d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0
+        5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0
+        21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+      Sign in with Google
+    </button>
+    <div class="auth-or">or</div>
+    <input id="af-ep-email" type="email" placeholder="you@sourcefuse.com" autocomplete="email">
+    <input id="af-ep-password" type="password" placeholder="Password" autocomplete="current-password">
+    <button type="button" id="af-ep-btn" class="btn auth-btn">Sign in with email</button>
+    <div id="af-auth-error" class="auth-error" hidden></div>
+  </div>
+</div>
 <div class="hero">
   <div class="wrap">
     <span class="eyebrow">Module 2 &middot; 4D focus: Delegation + Description + Discernment</span>
@@ -368,8 +409,8 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
   </div>
 
     <div class="foot">
-      <div><a href="ai-fluency-module-1.html?v=2026081202">&larr; Talking to AI clearly</a></div>
-      <div><a href="ai-fluency-module-3.html?v=2026081202">Google Sheets with AI &rarr;</a></div>
+      <div><a href="ai-fluency-module-1.html?v=2026081204">&larr; Talking to AI clearly</a></div>
+      <div><a href="ai-fluency-module-3.html?v=2026081204">Google Sheets with AI &rarr;</a></div>
     </div>
 </div></main>
 
@@ -380,12 +421,15 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
 
 /* ==========================================================================
    PLATFORM INTEGRATION
-   ==========================================================================
-   FIREBASE_CONFIG  project sfcertification-grafana, same app as every other
-                    Knowledge Hub page.
-   CP_COURSE_ID     Firestore `courses` doc id for this course. Identical in
-                    all 7 HTML files -- if it is ever changed, change it in
-                    all 7 and bump every one of them.
+   Matched to the deployed kubernetes-dashboard.html:
+     - reuse the DEFAULT Firebase app, never a named one
+     - sign-in OVERLAY, never a redirect
+     - @sourcefuse.com enforced client-side, mirroring the deployed course
+     - section state  -> progress/{uid}       (legacy collection, still in use)
+     - completions    -> courseProgress/{uid} with completedOn / completedAt
+                         date+time STRINGS, which is what the admin Course
+                         Progress reader keys on. Not a boolean, not a
+                         serverTimestamp.
    ========================================================================== */
 var FIREBASE_CONFIG = {
   apiKey: "AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q",
@@ -401,94 +445,231 @@ var COURSE_TITLE   = "AI Fluency for Non-Technical People";
 var CERT_TITLE     = "SF Certified AI Fluency Practitioner";
 var MODULE_KEYS    = ["ai-fluency-module-0", "ai-fluency-module-1", "ai-fluency-module-2", "ai-fluency-module-3", "ai-fluency-module-4"];
 
-if (!firebase.apps.length) { firebase.initializeApp(FIREBASE_CONFIG); }
-var auth = firebase.auth();
-var db   = firebase.firestore();
+/* progress/{uid} field per module, mirroring the k8s_m1..k8s_m5 convention. */
+var PROGRESS_KEYS  = { "ai-fluency-module-0": "af_m0", "ai-fluency-module-1": "af_m1",
+                       "ai-fluency-module-2": "af_m2", "ai-fluency-module-3": "af_m3",
+                       "ai-fluency-module-4": "af_m4" };
+
+if (!window._afApp) {
+  window._afApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
+}
+var _afAuth = firebase.auth(window._afApp);
+var _afDb   = firebase.firestore(window._afApp);
 
 var KH = {
   user: null,
 
-  /* Resolve the signed-in user, or send them to the course map to sign in. */
-  requireUser: function (cb) {
-    auth.onAuthStateChanged(function (u) {
-      if (!u) { window.location.href = "../sf-certs-hub.html"; return; }
-      KH.user = u;
-      var el = document.getElementById("whoami");
-      if (el) el.textContent = u.email || "";
-      cb(u);
-    });
-  },
-
-  /* Read courseProgress/{uid} -> courses[CP_COURSE_ID].modules */
-  loadProgress: function () {
-    return db.collection("courseProgress").doc(KH.user.uid).get().then(function (snap) {
-      if (!snap.exists) return {};
-      var d = snap.data() || {};
-      var c = (d.courses || {})[CP_COURSE_ID] || {};
-      return c.modules || {};
-    }).catch(function (e) {
-      console.error("courseProgress read failed", e);
-      return {};
-    });
-  },
-
-  /* Merge-write one module's state. moduleKey === filename minus .html */
-  saveModule: function (moduleKey, payload) {
-    var mod = {};
-    mod[moduleKey] = Object.assign({
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, payload);
-
-    var courses = {};
-    courses[CP_COURSE_ID] = {
-      courseId: COURSE_ID,
-      courseTitle: COURSE_TITLE,
-      modules: mod,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  stamp: function () {
+    var p = function (n) { return String(n).padStart(2, "0"); };
+    var d = new Date();
+    return {
+      date: d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()),
+      time: p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds())
     };
-
-    return db.collection("courseProgress").doc(KH.user.uid).set({
-      version: 2,
-      uid: KH.user.uid,
-      email: KH.user.email || "",
-      displayName: KH.user.displayName || "",
-      courses: courses,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
   },
 
-  /* Write one exam attempt. */
+  authError: function (msg) {
+    var el = document.getElementById("af-auth-error");
+    if (!el) return;
+    el.textContent = msg;
+    el.hidden = !msg;
+  },
+
+  signOut: function () {
+    _afAuth.signOut().catch(function (e) { console.error("Sign out failed", e); });
+  },
+
+  /* Shows the overlay when signed out; calls ready(user) when signed in.
+     Never navigates away -- a signed-out learner stays on the page they opened. */
+  requireUser: function (ready) {
+    var overlay = document.getElementById("af-auth-overlay");
+    var g = document.getElementById("af-google-btn");
+    var e = document.getElementById("af-ep-btn");
+    var so = document.getElementById("af-signout");
+
+    if (g) g.addEventListener("click", function () {
+      KH.authError("");
+      _afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+        .catch(function (err) { KH.authError(err.message); });
+    });
+
+    if (e) e.addEventListener("click", function () {
+      var email = (document.getElementById("af-ep-email").value || "").trim().toLowerCase();
+      var pwd = document.getElementById("af-ep-password").value || "";
+      KH.authError("");
+      if (!email || !pwd) { KH.authError("Please enter your email and password."); return; }
+      if (email.indexOf("@sourcefuse.com", email.length - 16) === -1) {
+        KH.authError("Only @sourcefuse.com accounts are allowed."); return;
+      }
+      _afAuth.signInWithEmailAndPassword(email, pwd).catch(function (err) {
+        KH.authError(
+          (err.code === "auth/wrong-password" || err.code === "auth/invalid-credential")
+            ? "Incorrect password."
+            : (err.code === "auth/user-not-found")
+              ? "No account found for this email." : err.message);
+      });
+    });
+
+    if (so) so.addEventListener("click", KH.signOut);
+
+    _afAuth.onAuthStateChanged(function (u) {
+      if (u && (!u.email || u.email.indexOf("@sourcefuse.com", u.email.length - 16) === -1)) {
+        KH.authError("Only @sourcefuse.com accounts are allowed.");
+        _afAuth.signOut();
+        return;
+      }
+      if (!u) {
+        KH.user = null;
+        if (overlay) overlay.hidden = false;
+        if (so) so.hidden = true;
+        var w0 = document.getElementById("whoami");
+        if (w0) w0.textContent = "";
+        return;
+      }
+      KH.user = u;
+      if (overlay) overlay.hidden = true;
+      if (so) so.hidden = false;
+      var w = document.getElementById("whoami");
+      if (w) w.textContent = u.displayName || u.email || "";
+      ready(u);
+    });
+  },
+
+  /* courses[CP_COURSE_ID] for this learner. */
+  loadCourse: function () {
+    return _afDb.collection("courseProgress").doc(KH.user.uid).get()
+      .then(function (snap) {
+        var d = snap.exists ? (snap.data() || {}) : {};
+        return (d.courses || {})[CP_COURSE_ID] || {};
+      })
+      .catch(function (e) { console.error("courseProgress read failed", e); return {}; });
+  },
+
+  /* Server-first read of progress/{uid}, cache fallback -- as the deployed course does. */
+  loadSections: function () {
+    var ref = _afDb.collection("progress").doc(KH.user.uid);
+    return ref.get({ source: "server" })
+      .then(function (s) { return s.exists ? (s.data() || {}) : {}; })
+      .catch(function () {
+        return ref.get()
+          .then(function (s) { return s.exists ? (s.data() || {}) : {}; })
+          .catch(function () { return {}; });
+      });
+  },
+
+  /* Section checkboxes for one module, stored as an array of section indices. */
+  saveSections: function (moduleKey, indices) {
+    var payload = {};
+    payload[PROGRESS_KEYS[moduleKey]] = indices;
+    return _afDb.collection("progress").doc(KH.user.uid).set(payload, { merge: true });
+  },
+
+  /* Records which module the learner is currently working on, and stamps course
+     start on first contact. Only writes when the stored value would actually
+     change, so re-opening a page is not a write. */
+  setModuleInProgress: function (courseObj, moduleKey) {
+    if (!KH.user) return Promise.resolve();
+    if (courseObj.courseCompletedOn) return Promise.resolve();
+    if (KH.isDone(courseObj, moduleKey)) return Promise.resolve();
+
+    var needStart = !courseObj.courseStartedOn;
+    if (courseObj.moduleInProgress === moduleKey && !needStart) return Promise.resolve();
+
+    var t = KH.stamp();
+    var courseUpdate = { moduleInProgress: moduleKey };
+    if (needStart) { courseUpdate.courseStartedOn = t.date; courseUpdate.courseStartedAt = t.time; }
+
+    var update = {
+      email: KH.user.email,
+      name: KH.user.displayName || KH.user.email,
+      courses: {}
+    };
+    update.courses[CP_COURSE_ID] = courseUpdate;
+    courseObj.moduleInProgress = moduleKey;
+    if (needStart) courseObj.courseStartedOn = t.date;
+
+    return _afDb.collection("courseProgress").doc(KH.user.uid).set(update, { merge: true })
+      .catch(function (e) { console.error("moduleInProgress write failed", e); });
+  },
+
+  /* Read-then-merge completion write. Preserves other courses and any module
+     already recorded, and stamps course start / course completion. */
+  completeModule: function (moduleKey) {
+    var ref = _afDb.collection("courseProgress").doc(KH.user.uid);
+    var t = KH.stamp();
+    return ref.get().then(function (snap) {
+      var data = snap.exists ? (snap.data() || {}) : {};
+      var courseObj = (data.courses || {})[CP_COURSE_ID] || {};
+      var existing = courseObj.modules || {};
+
+      var courseUpdate = { modules: {} };
+      if (!courseObj.courseStartedOn) {
+        courseUpdate.courseStartedOn = t.date;
+        courseUpdate.courseStartedAt = t.time;
+      }
+      if (!(existing[moduleKey] && existing[moduleKey].completedOn)) {
+        courseUpdate.modules[moduleKey] = { completedOn: t.date, completedAt: t.time };
+      }
+
+      var doneAfter = function (mk) {
+        return !!((existing[mk] && existing[mk].completedOn) || courseUpdate.modules[mk]);
+      };
+      if (MODULE_KEYS.every(doneAfter)) {
+        if (!courseObj.courseCompletedOn) {
+          courseUpdate.courseCompletedOn = t.date;
+          courseUpdate.courseCompletedAt = t.time;
+        }
+        courseUpdate.moduleInProgress = null;
+      } else {
+        var next = null;
+        for (var i = 0; i < MODULE_KEYS.length; i++) {
+          if (!doneAfter(MODULE_KEYS[i])) { next = MODULE_KEYS[i]; break; }
+        }
+        courseUpdate.moduleInProgress = next;
+      }
+
+      var update = {
+        email: KH.user.email,
+        name: KH.user.displayName || KH.user.email,
+        courses: {}
+      };
+      update.courses[CP_COURSE_ID] = courseUpdate;
+      return ref.set(update, { merge: true });
+    });
+  },
+
   saveExamAttempt: function (attempt) {
     var email = (KH.user.email || "unknown").toLowerCase();
-    return db.collection("courseExamResults").doc(email)
+    var t = KH.stamp();
+    return _afDb.collection("courseExamResults").doc(email)
       .collection("courses").doc(COURSE_ID)
       .collection("attempts").add(Object.assign({
         uid: KH.user.uid,
         email: email,
-        displayName: KH.user.displayName || "",
+        name: KH.user.displayName || email,
         courseId: COURSE_ID,
         courseTitle: COURSE_TITLE,
         certification: CERT_TITLE,
-        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+        submittedOn: t.date,
+        submittedAt: t.time,
+        submittedTs: firebase.firestore.FieldValue.serverTimestamp()
       }, attempt));
   },
 
   countAttempts: function () {
     var email = (KH.user.email || "unknown").toLowerCase();
-    return db.collection("courseExamResults").doc(email)
+    return _afDb.collection("courseExamResults").doc(email)
       .collection("courses").doc(COURSE_ID)
       .collection("attempts").get()
       .then(function (s) { return s.size; })
       .catch(function () { return 0; });
   },
 
-  esc: function (s) {
-    return String(s).replace(/[&<>"]/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
-    });
+  isDone: function (courseObj, moduleKey) {
+    var m = (courseObj.modules || {})[moduleKey];
+    return !!(m && m.completedOn);
   },
 
-  /* Deterministic shuffle so a learner sees a stable set within one attempt. */
   shuffle: function (arr, seed) {
     var a = arr.slice(), s = seed || Date.now();
     var rnd = function () { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; };
@@ -578,14 +759,11 @@ function wireSections() {
 }
 
 function persistSections() {
-  if (IS_GATE) return;
-  var map = {};
-  secDone.forEach(function (v, i) { map["s" + i] = !!v; });
-  KH.saveModule(MODULE_KEY, {
-    moduleNumber: MODULE_NUM,
-    sections: map,
-    sectionsComplete: secDone.filter(Boolean).length
-  }).catch(function (e) { console.error("section save failed", e); });
+  if (IS_GATE || !KH.user) return;
+  var idx = [];
+  secDone.forEach(function (v, i) { if (v) idx.push(i); });
+  KH.saveSections(MODULE_KEY, idx)
+    .catch(function (e) { console.error("section save failed", e); });
 }
 
 /* ---------- quiz ---------- */
@@ -678,23 +856,7 @@ function wireComplete() {
     var btn = this;
     btn.classList.add("is-disabled");
     btn.textContent = "Saving\u2026";
-    var payload = {
-      moduleNumber: MODULE_NUM,
-      complete: true,
-      completedAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    if (lastScore) {
-      payload.checkScore = lastScore.score;
-      payload.checkTotal = lastScore.total;
-      payload.checkPercent = lastScore.percent;
-    }
-    if (!IS_GATE) {
-      var map = {};
-      secDone.forEach(function (v, i) { map["s" + i] = !!v; });
-      payload.sections = map;
-      payload.sectionsComplete = secDone.filter(Boolean).length;
-    }
-    KH.saveModule(MODULE_KEY, payload).then(function () {
+    KH.completeModule(MODULE_KEY).then(function () {
       recorded = true;
       btn.textContent = "Module complete";
       paintComplete();
@@ -725,7 +887,7 @@ function wireComplete() {
   });
 }
 
-var DASH_HREF = "ai-fluency-dashboard.html?v=2026081202";
+var DASH_HREF = "ai-fluency-dashboard.html?v=2026081204";
 
 document.addEventListener("DOMContentLoaded", function () {
   wireSections();
@@ -734,12 +896,12 @@ document.addEventListener("DOMContentLoaded", function () {
   paintSections();
 
   KH.requireUser(function () {
-    KH.loadProgress().then(function (mods) {
+    Promise.all([KH.loadCourse(), IS_GATE ? {} : KH.loadSections()]).then(function (r) {
+      var courseObj = r[0], prog = r[1] || {};
       var gate = document.getElementById("gate");
 
       if (MODULE_NUM > 0) {
-        var m0 = mods[MODULE_KEYS[0]];
-        if (!m0 || !m0.complete) {
+        if (!KH.isDone(courseObj, MODULE_KEYS[0])) {
           gate.className = "msg warnbox";
           gate.innerHTML = 'Module 0 is not complete yet. ' +
             '<a href="' + MOD0_HREF + '">Pass the gate quiz</a> to unlock this module.';
@@ -749,14 +911,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      var mine = mods[MODULE_KEY] || {};
-      if (mine.sections && !IS_GATE) {
-        for (var i = 0; i < N_SECTIONS; i++) secDone[i] = !!mine.sections["s" + i];
+      if (!IS_GATE) {
+        var saved = prog[PROGRESS_KEYS[MODULE_KEY]];
+        if (Array.isArray(saved)) {
+          for (var i = 0; i < N_SECTIONS; i++) secDone[i] = saved.indexOf(i) !== -1;
+        }
       }
-      if (mine.complete) {
+      if (KH.isDone(courseObj, MODULE_KEY)) {
         recorded = true;
         if (!IS_GATE) secDone = new Array(N_SECTIONS).fill(true);
       }
+      KH.setModuleInProgress(courseObj, MODULE_KEY);
       paintSections();
       paintComplete();
 
@@ -771,7 +936,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("submitQuiz").addEventListener("click", gradeQuiz);
   document.getElementById("retryQuiz").addEventListener("click", renderQuiz);
 });
-var MOD0_HREF = "ai-fluency-module-0.html?v=2026081202";
+var MOD0_HREF = "ai-fluency-module-0.html?v=2026081204";
 </script>
 </body>
 </html>
