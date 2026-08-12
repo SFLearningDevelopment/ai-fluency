@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- build: 2026081202 -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reviewer &mdash; AI Fluency for Non-Technical People &middot; SF Knowledge Hub</title>
+  <style>
+*{box-sizing:border-box}
+:root{
+  --blue:#1a6eb5; --blue-dk:#14558c; --blue-tint:#eaf3fb; --blue-line:#c5ddf0;
+  --ink:#12212e; --muted:#5b6b7a; --line:#dde5ec; --bg:#fff; --shell:#f6f9fc;
+  --ok:#1e7f4f; --ok-tint:#e9f6ef; --ok-line:#b6e0c8;
+  --no:#b3261e; --no-tint:#fdeceb; --no-line:#f2c3c0;
+  --warn:#9a5b06; --warn-tint:#fdf3e5; --warn-line:#f0d9b3;
+  --r:10px;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--shell); color:var(--ink);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+a{color:var(--blue-dk)}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+
+/* top bar */
+.topbar{background:var(--blue);color:#fff}
+.topbar .wrap{display:flex;align-items:center;gap:14px;min-height:56px;flex-wrap:wrap}
+.topbar a{color:#fff;text-decoration:none;font-size:14px;opacity:.92}
+.topbar a:hover{opacity:1;text-decoration:underline}
+.topbar .brand{font-weight:700;letter-spacing:.2px;margin-right:auto;font-size:15px}
+.topbar .who{font-size:13px;opacity:.9}
+
+/* hero */
+.hero{background:#fff;border-bottom:1px solid var(--line);padding:30px 0 26px}
+.hero h1{margin:0 0 6px;font-size:29px;line-height:1.22;letter-spacing:-.4px}
+.hero .sub{margin:0;color:var(--muted);font-size:15px}
+.eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.1px;
+  text-transform:uppercase;color:var(--blue-dk);background:var(--blue-tint);
+  border:1px solid var(--blue-line);border-radius:999px;padding:3px 10px;margin-bottom:12px}
+
+main{padding:26px 0 60px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;margin:0 0 16px}
+.card h2{margin:0 0 4px;font-size:20px;letter-spacing:-.2px}
+.card h3{margin:22px 0 8px;font-size:16px}
+.card p{margin:0 0 12px}
+.card p:last-child{margin-bottom:0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue);
+  background:var(--blue);color:#fff;font:inherit;font-size:15px;font-weight:600;
+  padding:10px 18px;border-radius:8px;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--blue-dk);border-color:var(--blue-dk)}
+.btn.ghost{background:#fff;color:var(--blue-dk)}
+.btn.ghost:hover{background:var(--blue-tint)}
+.btn.quiet{background:#fff;color:var(--muted);border-color:var(--line)}
+.btn.quiet:hover{background:var(--shell);color:var(--ink)}
+.btn[disabled],.btn.is-disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
+.btn:focus-visible,a:focus-visible,input:focus-visible,label:focus-visible{
+  outline:3px solid #7fb6e4;outline-offset:2px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+
+/* pills / status */
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;
+  border:1px solid var(--line);background:var(--shell);color:var(--muted)}
+.pill.done{background:var(--ok-tint);border-color:var(--ok-line);color:var(--ok)}
+.pill.lock{background:var(--shell);border-color:var(--line);color:var(--muted)}
+.pill.open{background:var(--blue-tint);border-color:var(--blue-line);color:var(--blue-dk)}
+
+/* callouts */
+.callout{background:var(--blue-tint);border:1px solid var(--blue-line);border-left:4px solid var(--blue);
+  border-radius:8px;padding:14px 16px;margin:16px 0}
+.callout b{display:block;margin-bottom:4px;color:var(--blue-dk)}
+.callout p{margin:0}
+.prompt{background:#f4f7fa;border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+  margin:14px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.6}
+.prompt-label{display:block;font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.9px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+ul.examples,ul.ref{margin:10px 0 14px;padding-left:22px}
+ul.examples li,ul.ref li{margin-bottom:7px}
+ul.examples.danger li{color:#7d1f19}
+ol.formula{margin:10px 0 14px;padding-left:22px}
+ol.formula li{margin-bottom:7px}
+table.compare{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+table.compare th,table.compare td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+
+/* progress rail */
+.rail{display:flex;gap:6px;margin:14px 0 0}
+.rail span{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.rail span.on{background:var(--blue)}
+.railnote{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* sections */
+.section{border:1px solid var(--line);border-radius:var(--r);background:#fff;margin:0 0 14px;overflow:hidden}
+.section.locked{opacity:.62}
+.section-head{display:flex;align-items:center;gap:12px;padding:16px 20px;background:#fff;
+  border:0;width:100%;text-align:left;font:inherit;cursor:pointer}
+.section.locked .section-head{cursor:not-allowed}
+.section-num{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--blue-dk);
+  background:var(--blue-tint);border:1px solid var(--blue-line);border-radius:6px;padding:3px 8px}
+.section-title{flex:1;font-size:17px;font-weight:600}
+.section-body{padding:0 20px 20px;border-top:1px solid var(--line)}
+.section-body>*:first-child{margin-top:16px}
+.section[hidden]{display:none}
+
+/* quiz */
+.q{border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:0 0 14px;background:#fff}
+.q .qnum{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.q .scen{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--warn);background:var(--warn-tint);border:1px solid var(--warn-line);
+  border-radius:999px;padding:2px 9px;margin-left:8px}
+.q .qtext{margin:8px 0 14px;font-weight:600;font-size:16px}
+.opt{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;
+  padding:11px 14px;margin-bottom:9px;cursor:pointer;background:#fff}
+.opt:hover{border-color:var(--blue-line);background:var(--blue-tint)}
+.opt input{margin:4px 0 0;flex:0 0 auto}
+.opt.correct{background:var(--ok-tint);border-color:var(--ok-line)}
+.opt.wrong{background:var(--no-tint);border-color:var(--no-line)}
+.graded .opt{cursor:default}
+.graded .opt:hover{border-color:var(--line);background:#fff}
+.graded .opt.correct:hover{background:var(--ok-tint);border-color:var(--ok-line)}
+.graded .opt.wrong:hover{background:var(--no-tint);border-color:var(--no-line)}
+.why{margin-top:10px;font-size:14px;padding:10px 13px;border-radius:7px;
+  background:var(--shell);border:1px solid var(--line);color:var(--muted)}
+.why b{color:var(--ink)}
+
+/* result banner */
+.result{border-radius:var(--r);padding:18px 20px;margin:0 0 16px;border:1px solid}
+.result.pass{background:var(--ok-tint);border-color:var(--ok-line)}
+.result.fail{background:var(--no-tint);border-color:var(--no-line)}
+.result h2{margin:0 0 4px;font-size:19px}
+.result.pass h2{color:var(--ok)}
+.result.fail h2{color:var(--no)}
+.result p{margin:0;font-size:15px}
+
+/* dashboard modules */
+.mod{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--r);
+  background:#fff;padding:18px 20px;margin:0 0 12px;text-decoration:none;color:inherit}
+.mod:hover{border-color:var(--blue-line);box-shadow:0 1px 3px rgba(26,110,181,.12)}
+.mod.locked{opacity:.6;pointer-events:none}
+.mod .idx{flex:0 0 42px;height:42px;border-radius:9px;background:var(--blue-tint);
+  border:1px solid var(--blue-line);color:var(--blue-dk);display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:16px}
+.mod.done .idx{background:var(--ok-tint);border-color:var(--ok-line);color:var(--ok)}
+.mod .txt{flex:1;min-width:0}
+.mod .txt h3{margin:0 0 3px;font-size:17px}
+.mod .txt p{margin:0;font-size:14px;color:var(--muted)}
+.mod .focus{display:inline-block;margin-top:7px;font-size:12px;color:var(--blue-dk);
+  background:var(--blue-tint);border:1px solid var(--blue-line);border-radius:999px;padding:2px 9px}
+
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.meta div{background:#fff;padding:13px 16px}
+.meta dt{font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.meta dd{margin:3px 0 0;font-size:15px;font-weight:600}
+
+.timer{position:sticky;top:0;z-index:20;background:#fff;border:1px solid var(--line);
+  border-radius:var(--r);padding:12px 18px;margin:0 0 16px;display:flex;
+  align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.timer .clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:19px}
+.timer .clock.low{color:var(--no)}
+
+.note{font-size:14px;color:var(--muted)}
+.foot{border-top:1px solid var(--line);margin-top:32px;padding-top:18px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px}
+.msg{padding:12px 16px;border-radius:8px;margin:0 0 14px;font-size:14px;border:1px solid}
+.msg.info{background:var(--blue-tint);border-color:var(--blue-line);color:var(--blue-dk)}
+.msg.warnbox{background:var(--warn-tint);border-color:var(--warn-line);color:var(--warn)}
+.msg.bad{background:var(--no-tint);border-color:var(--no-line);color:var(--no)}
+.hide{display:none !important}
+
+@media (max-width:640px){
+  .hero h1{font-size:24px}
+  .card{padding:18px 16px}
+  .section-head{padding:14px 16px}
+  .section-body{padding:0 16px 18px}
+  table.compare{font-size:14px}
+  table.compare th,table.compare td{padding:8px 9px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <span class="brand">SF Knowledge Hub</span>
+    <a href="../ai-fluency-dashboard.html?v=2026081202">Course dashboard</a>
+    <a href="../../sf-certs-hub.html">Course map</a>
+  </div>
+</header>
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Reviewer copy &middot; answers shown</span>
+    <h1>AI Fluency for Non-Technical People</h1>
+    <p class="sub">Every section, question, and keyed answer in one page for review.
+    Not linked from learner-facing pages.</p>
+  </div>
+</div>
+
+<main><div class="wrap">
+  <div class="card">
+    <h2>Gate quiz &mdash; AI Fluency Foundations</h2>
+    <p class="note">4D focus: All four D's</p>
+    <h3>Gate quiz (8 questions, pass 70%)</h3>
+    <div class="q"><span class="qnum">Q1</span><p class="qtext">What do the four D's in the AI Fluency framework stand for?</p>
+      <div class="opt correct"><span>A. Delegation, Description, Discernment, Diligence &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Design, Develop, Deploy, Deliver</span></div>
+      <div class="opt"><span>C. Data, Design, Decision, Delivery</span></div>
+      <div class="opt"><span>D. Delegation, Direction, Detail, Delivery</span></div>
+      <div class="why"><b>Why:</b> The 4Ds are Delegation, Description, Discernment, and Diligence.</div></div>
+    <div class="q"><span class="qnum">Q2</span><p class="qtext">&ldquo;Deciding which parts of a task to hand to AI and which to keep for your own judgement&rdquo; describes which competency?</p>
+      <div class="opt"><span>A. Description</span></div>
+      <div class="opt correct"><span>B. Delegation &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Discernment</span></div>
+      <div class="opt"><span>D. Diligence</span></div>
+      <div class="why"><b>Why:</b> That is the definition of Delegation.</div></div>
+    <div class="q"><span class="qnum">Q3</span><p class="qtext">You review an AI's draft and notice it invented a fact. Catching that is an example of:</p>
+      <div class="opt"><span>A. Delegation</span></div>
+      <div class="opt"><span>B. Description</span></div>
+      <div class="opt correct"><span>C. Discernment &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>D. Diligence</span></div>
+      <div class="why"><b>Why:</b> Evaluating and judging the quality of output is Discernment.</div></div>
+    <div class="q"><span class="qnum">Q4</span><p class="qtext">Not pasting confidential company data into an AI tool is part of which competency?</p>
+      <div class="opt correct"><span>A. Diligence &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Delegation</span></div>
+      <div class="opt"><span>C. Description</span></div>
+      <div class="opt"><span>D. Discernment</span></div>
+      <div class="why"><b>Why:</b> Responsible, safe use is Diligence.</div></div>
+    <div class="q"><span class="qnum">Q5</span><p class="qtext">The course describes three ways of interacting with AI. Which set is correct?</p>
+      <div class="opt correct"><span>A. Automation, Augmentation, Agency &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Input, Process, Output</span></div>
+      <div class="opt"><span>C. Ask, Answer, Act</span></div>
+      <div class="opt"><span>D. Prompt, Reply, Review</span></div>
+      <div class="why"><b>Why:</b> The three interaction modes are Automation, Augmentation, and Agency.</div></div>
+    <div class="q"><span class="qnum">Q6</span><p class="qtext">According to the framework, the most effective AI users are first and foremost:</p>
+      <div class="opt"><span>A. Expert programmers</span></div>
+      <div class="opt correct"><span>B. Experts in their own domain &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Fast typists</span></div>
+      <div class="opt"><span>D. People who memorise many prompts</span></div>
+      <div class="why"><b>Why:</b> Effective users are domain experts first, AI delegators second.</div></div>
+    <div class="q"><span class="qnum">Q7</span><p class="qtext">Rewriting a vague request into a clear one so the AI understands exactly what you want is:</p>
+      <div class="opt"><span>A. Delegation</span></div>
+      <div class="opt correct"><span>B. Description &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Discernment</span></div>
+      <div class="opt"><span>D. Diligence</span></div>
+      <div class="why"><b>Why:</b> Communicating clearly is Description.</div></div>
+    <div class="q"><span class="qnum">Q8</span><p class="qtext">Which statement best matches the course's overall message?</p>
+      <div class="opt"><span>A. AI is a magical solution that removes the need for human judgement</span></div>
+      <div class="opt"><span>B. AI is only useful to technical people</span></div>
+      <div class="opt correct"><span>C. AI is powerful but only as useful and safe as our thoughtful use makes it &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>D. AI should be avoided for everyday work tasks</span></div>
+      <div class="why"><b>Why:</b> The course stresses AI is powerful but not magical &mdash; value comes from thoughtful engagement.</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Module 1 &mdash; Talking to AI clearly</h2>
+    <p class="note">4D focus: Description</p>
+    <h3>Sections</h3>
+    <ul class="examples">
+      <li><b>1.1</b> &mdash; What an AI assistant is (and isn't)</li>
+      <li><b>1.2</b> &mdash; Write like you talk</li>
+      <li><b>1.3</b> &mdash; The instruction formula</li>
+      <li><b>1.4</b> &mdash; Refining &mdash; the back-and-forth</li>
+    </ul>
+    <h3>Knowledge check (5 questions, pass 70%)</h3>
+    <div class="q"><span class="qnum">Q1</span><p class="qtext">Your written English is not perfect. What should you do when asking AI for help?</p>
+      <div class="opt"><span>A. Wait until your English improves before using AI</span></div>
+      <div class="opt correct"><span>B. Ask anyway &mdash; write plainly, even mixing your language; the AI will still understand &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Only use one-word commands</span></div>
+      <div class="opt"><span>D. Ask a colleague to write every prompt for you</span></div>
+      <div class="why"><b>Why:</b> Imperfect English is fine, and AI can even help improve it.</div></div>
+    <div class="q"><span class="qnum">Q2</span><p class="qtext">Which request is most likely to get a useful result?</p>
+      <div class="opt"><span>A. &ldquo;Email.&rdquo;</span></div>
+      <div class="opt"><span>B. &ldquo;Write something for work.&rdquo;</span></div>
+      <div class="opt correct"><span>C. &ldquo;I'm an admin. Write a short, polite email to a vendor asking for a delivery update by Friday.&rdquo; &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>D. &ldquo;Do the needful.&rdquo;</span></div>
+      <div class="why"><b>Why:</b> It names who you are, what you want, and how &mdash; the instruction formula.</div></div>
+    <div class="q"><span class="qnum">Q3</span><p class="qtext">The AI's first answer is too long. What's the best next step?</p>
+      <div class="opt"><span>A. Start over with a brand-new tool</span></div>
+      <div class="opt"><span>B. Give up &mdash; the AI can't change it</span></div>
+      <div class="opt correct"><span>C. Reply &lsquo;make it shorter&rsquo; and keep refining &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>D. Copy it as-is because AI is always right</span></div>
+      <div class="why"><b>Why:</b> Refining through follow-up is the central skill of Description.</div></div>
+    <div class="q"><span class="qnum">Q4</span><p class="qtext">&ldquo;Who you are, what you want, how you want it&rdquo; is a formula for:</p>
+      <div class="opt correct"><span>A. Giving the AI a clear instruction &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Checking the AI's math</span></div>
+      <div class="opt"><span>C. Logging into the tool</span></div>
+      <div class="opt"><span>D. Deciding your salary</span></div>
+      <div class="why"><b>Why:</b> It is the Description instruction formula.</div></div>
+    <div class="q"><span class="qnum">Q5</span><span class="scen">Scenario</span><p class="qtext">You ask the AI to draft a notification message for a Slack channel and it produces a stiff, formal paragraph. You want it friendlier. Best action?</p>
+      <div class="opt"><span>A. Accept it &mdash; changing tone isn't possible</span></div>
+      <div class="opt correct"><span>B. Reply: &lsquo;make this warmer and simpler, like talking to a colleague&rsquo; &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Retype the whole notice yourself</span></div>
+      <div class="opt"><span>D. Ask a completely different question</span></div>
+      <div class="why"><b>Why:</b> Tone is adjustable through a simple follow-up instruction.</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Module 2 &mdash; Email with AI</h2>
+    <p class="note">4D focus: Delegation + Description + Discernment</p>
+    <h3>Sections</h3>
+    <ul class="examples">
+      <li><b>2.1</b> &mdash; Drafting an email from a few bullet points</li>
+      <li><b>2.2</b> &mdash; Replying, and adjusting tone</li>
+      <li><b>2.3</b> &mdash; Fixing grammar, and translating</li>
+      <li><b>2.4</b> &mdash; Summarising a long email</li>
+    </ul>
+    <h3>Knowledge check (5 questions, pass 70%)</h3>
+    <div class="q"><span class="qnum">Q1</span><span class="scen">Scenario</span><p class="qtext">A vendor sends a long, confusing email. You need the key points fast. Best use of AI?</p>
+      <div class="opt correct"><span>A. Paste it in and ask for a short summary with any action items &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Forward it to everyone and hope someone reads it</span></div>
+      <div class="opt"><span>C. Reply immediately without reading</span></div>
+      <div class="opt"><span>D. Delete it</span></div>
+      <div class="why"><b>Why:</b> Summarising long messages is a core email use &mdash; Discernment then checks the summary.</div></div>
+    <div class="q"><span class="qnum">Q2</span><p class="qtext">You've written a rough reply with some grammar mistakes. The safest, most useful step before sending?</p>
+      <div class="opt"><span>A. Send it as-is</span></div>
+      <div class="opt correct"><span>B. Ask AI to fix grammar and improve tone, then read it before sending &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Ask AI to send it for you automatically</span></div>
+      <div class="opt"><span>D. Never send emails again</span></div>
+      <div class="why"><b>Why:</b> AI improves the draft; you still review before sending (Diligence).</div></div>
+    <div class="q"><span class="qnum">Q3</span><span class="scen">Scenario</span><p class="qtext">A customer's email is rude. You must reply professionally. Best instruction to the AI?</p>
+      <div class="opt"><span>A. &lsquo;Write an equally rude reply&rsquo;</span></div>
+      <div class="opt correct"><span>B. &lsquo;Draft a calm, polite, professional reply that addresses their concern&rsquo; &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. &lsquo;Ignore them&rsquo;</span></div>
+      <div class="opt"><span>D. &lsquo;Reply in one word&rsquo;</span></div>
+      <div class="why"><b>Why:</b> AI helps keep difficult replies professional.</div></div>
+    <div class="q"><span class="qnum">Q4</span><p class="qtext">The AI summarises a long email but leaves out a deadline you saw in the original. What should you do?</p>
+      <div class="opt"><span>A. Trust the summary completely</span></div>
+      <div class="opt correct"><span>B. Notice the gap and add the deadline &mdash; always check the summary against the original &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Delete the original email</span></div>
+      <div class="opt"><span>D. Assume the deadline doesn't matter</span></div>
+      <div class="why"><b>Why:</b> Discernment: AI summaries can miss details; verify against the source.</div></div>
+    <div class="q"><span class="qnum">Q5</span><p class="qtext">Turning three rough bullet points into a polished email is an example of using AI to:</p>
+      <div class="opt"><span>A. Replace your judgement entirely</span></div>
+      <div class="opt correct"><span>B. Delegate the drafting while you keep control of the message &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Avoid ever writing again</span></div>
+      <div class="opt"><span>D. Send email without reading</span></div>
+      <div class="why"><b>Why:</b> Delegation: hand over drafting, keep judgement.</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Module 3 &mdash; Google Sheets with AI</h2>
+    <p class="note">4D focus: Delegation + Description + Discernment</p>
+    <h3>Sections</h3>
+    <ul class="examples">
+      <li><b>3.1</b> &mdash; Describe the goal, get the formula</li>
+      <li><b>3.2</b> &mdash; Explaining and fixing formulas</li>
+      <li><b>3.3</b> &mdash; Cleaning and organising</li>
+      <li><b>3.4</b> &mdash; Trackers, checklists, and meeting notes</li>
+    </ul>
+    <h3>Knowledge check (5 questions, pass 70%)</h3>
+    <div class="q"><span class="qnum">Q1</span><p class="qtext">You don't know the formula to add up a column. Best approach?</p>
+      <div class="opt"><span>A. Give up and use a calculator</span></div>
+      <div class="opt correct"><span>B. Describe what you want in plain words and ask AI for the Sheets formula &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Guess random formulas</span></div>
+      <div class="opt"><span>D. Ask AI to log into your account</span></div>
+      <div class="why"><b>Why:</b> Describe-the-goal is the central Sheets skill &mdash; Description.</div></div>
+    <div class="q"><span class="qnum">Q2</span><span class="scen">Scenario</span><p class="qtext">AI gives you a formula and it shows an error in the cell. Best next step?</p>
+      <div class="opt"><span>A. Delete the whole sheet</span></div>
+      <div class="opt correct"><span>B. Paste the formula and error back to AI and ask it to fix them &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Assume Sheets is broken</span></div>
+      <div class="opt"><span>D. Ignore the error</span></div>
+      <div class="why"><b>Why:</b> Iterate with AI to fix &mdash; Description + Discernment.</div></div>
+    <div class="q"><span class="qnum">Q3</span><p class="qtext">Someone left a complex formula you don't understand. How can AI help?</p>
+      <div class="opt correct"><span>A. Ask AI to explain in plain words what the formula does &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Delete it so you don't have to understand it</span></div>
+      <div class="opt"><span>C. Copy it to every cell blindly</span></div>
+      <div class="opt"><span>D. Nothing &mdash; AI can't read formulas</span></div>
+      <div class="why"><b>Why:</b> Understanding via explanation is Discernment.</div></div>
+    <div class="q"><span class="qnum">Q4</span><p class="qtext">You have a messy list with names and emails mixed together. AI is good for:</p>
+      <div class="opt correct"><span>A. Tidying and splitting the data into proper columns &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Nothing &mdash; messy data can't be fixed</span></div>
+      <div class="opt"><span>C. Deleting the list</span></div>
+      <div class="opt"><span>D. Printing it as-is</span></div>
+      <div class="why"><b>Why:</b> Cleaning and organising lists is a core Sheets use.</div></div>
+    <div class="q"><span class="qnum">Q5</span><p class="qtext">After AI builds a formula that sums sales, you should:</p>
+      <div class="opt"><span>A. Trust it blindly forever</span></div>
+      <div class="opt correct"><span>B. Spot-check the result against a couple of values you can verify &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Never look at the sheet again</span></div>
+      <div class="opt"><span>D. Assume it's wrong and discard it</span></div>
+      <div class="why"><b>Why:</b> Discernment: verify AI's output on data you can check.</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Module 4 &mdash; Using AI responsibly</h2>
+    <p class="note">4D focus: Diligence + Discernment</p>
+    <h3>Sections</h3>
+    <ul class="examples">
+      <li><b>4.1</b> &mdash; When to use AI &mdash; and when not to</li>
+      <li><b>4.2</b> &mdash; Never paste confidential or personal data</li>
+      <li><b>4.3</b> &mdash; AI can be confidently wrong</li>
+      <li><b>4.4</b> &mdash; Always review before sending or acting</li>
+    </ul>
+    <h3>Knowledge check (6 questions, pass 70%)</h3>
+    <div class="q"><span class="qnum">Q1</span><p class="qtext">Which of these should you NEVER paste into a public AI tool?</p>
+      <div class="opt"><span>A. A general question about email etiquette</span></div>
+      <div class="opt correct"><span>B. Customer personal data, passwords, or confidential contracts &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. A rough draft of a thank-you note</span></div>
+      <div class="opt"><span>D. A request to explain a Sheets formula</span></div>
+      <div class="why"><b>Why:</b> Confidential and personal data must never be pasted &mdash; core Diligence rule.</div></div>
+    <div class="q"><span class="qnum">Q2</span><span class="scen">Scenario</span><p class="qtext">AI confidently gives you a statistic for a report. Before using it, you should:</p>
+      <div class="opt"><span>A. Use it immediately &mdash; AI is always right</span></div>
+      <div class="opt correct"><span>B. Verify it from a trusted source; AI can be confidently wrong &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Delete your report</span></div>
+      <div class="opt"><span>D. Add more AI statistics without checking</span></div>
+      <div class="why"><b>Why:</b> Discernment + Diligence: verify facts before relying on them.</div></div>
+    <div class="q"><span class="qnum">Q3</span><p class="qtext">The single most important habit before sending anything AI helped you write is to:</p>
+      <div class="opt"><span>A. Send it faster than usual</span></div>
+      <div class="opt correct"><span>B. Read and review it yourself first &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Add more text</span></div>
+      <div class="opt"><span>D. Forward it to AI again</span></div>
+      <div class="why"><b>Why:</b> Always review before sending &mdash; the human stays responsible.</div></div>
+    <div class="q"><span class="qnum">Q4</span><span class="scen">Scenario</span><p class="qtext">A task involves sensitive HR details about a named employee. Best choice?</p>
+      <div class="opt"><span>A. Paste everything into AI to save time</span></div>
+      <div class="opt correct"><span>B. Keep the sensitive details out; ask AI only general, non-identifying questions &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Share it in a public chat</span></div>
+      <div class="opt"><span>D. Email it to yourself first, then paste</span></div>
+      <div class="why"><b>Why:</b> Protect personal data &mdash; use AI only for the non-sensitive parts.</div></div>
+    <div class="q"><span class="qnum">Q5</span><p class="qtext">&ldquo;AI is powerful but not magical.&rdquo; The best interpretation is:</p>
+      <div class="opt"><span>A. AI never makes mistakes</span></div>
+      <div class="opt correct"><span>B. AI's usefulness and safety depend on how thoughtfully you use it &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. AI should never be used</span></div>
+      <div class="opt"><span>D. AI replaces your judgement</span></div>
+      <div class="why"><b>Why:</b> Matches the course's closing message.</div></div>
+    <div class="q"><span class="qnum">Q6</span><p class="qtext">When is it MOST appropriate to rely on AI without much checking?</p>
+      <div class="opt"><span>A. For legal or financial decisions</span></div>
+      <div class="opt correct"><span>B. For low-stakes drafting you'll still read, like rewording a routine note &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. For confidential data handling</span></div>
+      <div class="opt"><span>D. For final facts in an official report</span></div>
+      <div class="why"><b>Why:</b> Low-stakes, reviewed tasks are the safe zone; high-stakes work needs verification.</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Certification exam bank</h2>
+    <p class="note">45 questions &middot; 15 drawn per attempt &middot; pass 75% &middot; 25 minutes &middot; 3 attempts</p>
+    <p class="note">Per-attempt topic quota: foundations 2, description 3, email 3, sheets 2, responsible 5</p>
+    <div class="q"><span class="qnum">q001 &middot; foundations</span><p class="qtext">&ldquo;Automation, Augmentation, Agency&rdquo; are the three:</p>
+      <div class="opt correct"><span>A. Ways of interacting with AI &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Names of AI tools</span></div>
+      <div class="opt"><span>C. Steps to log in</span></div>
+      <div class="opt"><span>D. Types of email</span></div>
+      <div class="why"><b>Why:</b> The three interaction modes from the prerequisite course.</div></div>
+    <div class="q"><span class="qnum">q002 &middot; foundations</span><p class="qtext">Best description of the human's role when using AI at work?</p>
+      <div class="opt"><span>A. Hand over all responsibility to the AI</span></div>
+      <div class="opt correct"><span>B. Stay the expert and final decision-maker; use AI as an assistant &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Stop thinking about the task</span></div>
+      <div class="opt"><span>D. Only use AI for fun</span></div>
+      <div class="why"><b>Why:</b> Delegation principle: you remain the expert and are responsible.</div></div>
+    <div class="q"><span class="qnum">q003 &middot; foundations</span><p class="qtext">You notice an AI-written summary dropped an important date. This is a lapse best caught by:</p>
+      <div class="opt"><span>A. Delegation</span></div>
+      <div class="opt"><span>B. Description</span></div>
+      <div class="opt correct"><span>C. Discernment &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>D. Automation</span></div>
+      <div class="why"><b>Why:</b> Discernment catches missing or incorrect details.</div></div>
+    <div class="q"><span class="qnum">q004 &middot; foundations</span><p class="qtext">Which pair correctly matches a competency to an activity?</p>
+      <div class="opt"><span>A. Description &mdash; choosing which task to give AI</span></div>
+      <div class="opt correct"><span>B. Diligence &mdash; keeping confidential data out of AI tools &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Delegation &mdash; checking whether an answer is true</span></div>
+      <div class="opt"><span>D. Discernment &mdash; writing a clearer instruction</span></div>
+      <div class="why"><b>Why:</b> Responsible, safe use is Diligence. The other three pairs are swapped.</div></div>
+    <div class="q"><span class="qnum">q005 &middot; foundations</span><p class="qtext">According to the framework, what makes someone an effective AI user?</p>
+      <div class="opt"><span>A. Memorising a large library of prompts</span></div>
+      <div class="opt correct"><span>B. Being an expert in their own domain and delegating well &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Typing quickly</span></div>
+      <div class="opt"><span>D. Knowing how the model was built</span></div>
+      <div class="why"><b>Why:</b> Domain expertise comes first; AI is the assistant to it.</div></div>
+    <div class="q"><span class="qnum">q006 &middot; foundations</span><p class="qtext">Deciding to write a sensitive message yourself rather than asking AI is an exercise of:</p>
+      <div class="opt correct"><span>A. Delegation &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Description</span></div>
+      <div class="opt"><span>C. Discernment</span></div>
+      <div class="opt"><span>D. Diligence</span></div>
+      <div class="why"><b>Why:</b> Delegation includes deciding what NOT to hand over.</div></div>
+    <div class="q"><span class="qnum">q007 &middot; description</span><p class="qtext">Which is the clearest instruction to an AI?</p>
+      <div class="opt"><span>A. &lsquo;Fix this.&rsquo;</span></div>
+      <div class="opt correct"><span>B. &lsquo;I'm an office admin. Rewrite this note to staff to be shorter and friendlier, as a bulleted list.&rsquo; &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. &lsquo;Make good.&rsquo;</span></div>
+      <div class="opt"><span>D. &lsquo;Email stuff to people.&rsquo;</span></div>
+      <div class="why"><b>Why:</b> Names role, task, and format &mdash; Description.</div></div>
+    <div class="q"><span class="qnum">q008 &middot; description</span><p class="qtext">The instruction formula taught in this course is:</p>
+      <div class="opt correct"><span>A. Who you are, what you want, how you want it &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Louder, longer, faster</span></div>
+      <div class="opt"><span>C. Copy, paste, send</span></div>
+      <div class="opt"><span>D. Ask once and accept</span></div>
+      <div class="why"><b>Why:</b> The Description instruction formula.</div></div>
+    <div class="q"><span class="qnum">q009 &middot; description</span><p class="qtext">Your English is not fluent and you are unsure how to phrase a request. What should you do?</p>
+      <div class="opt"><span>A. Wait until your English improves</span></div>
+      <div class="opt correct"><span>B. Write it plainly in your own words, mixing your language if needed &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Use only single words</span></div>
+      <div class="opt"><span>D. Avoid AI for written tasks</span></div>
+      <div class="why"><b>Why:</b> Imperfect English is fine; AI understands plain phrasing and can improve it.</div></div>
+    <div class="q"><span class="qnum">q010 &middot; description</span><p class="qtext">Which addition to a request usually saves the most rework?</p>
+      <div class="opt"><span>A. Adding &lsquo;please&rsquo;</span></div>
+      <div class="opt correct"><span>B. Saying the format and length you want &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Making the request longer</span></div>
+      <div class="opt"><span>D. Writing it in capitals</span></div>
+      <div class="why"><b>Why:</b> The &lsquo;how you want it&rsquo; part is the one most often skipped.</div></div>
+    <div class="q"><span class="qnum">q011 &middot; description</span><span class="scen">Scenario</span><p class="qtext">You ask for a summary and get five paragraphs. What is the efficient response?</p>
+      <div class="opt"><span>A. Rewrite the request from scratch in a new chat</span></div>
+      <div class="opt correct"><span>B. Reply &lsquo;shorter &mdash; three bullet points&rsquo; &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Accept it and edit it yourself</span></div>
+      <div class="opt"><span>D. Try a different AI tool</span></div>
+      <div class="why"><b>Why:</b> Refining through follow-up is faster than restarting.</div></div>
+    <div class="q"><span class="qnum">q012 &middot; description</span><p class="qtext">You need a notice to staff about a lift repair. Which request is strongest?</p>
+      <div class="opt"><span>A. &lsquo;Lift notice.&rsquo;</span></div>
+      <div class="opt"><span>B. &lsquo;Write a notice about the lift.&rsquo;</span></div>
+      <div class="opt correct"><span>C. &lsquo;I manage facilities. Write a friendly notice to all staff that the lift is under repair on Saturday. Under 80 words.&rsquo; &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>D. &lsquo;Tell everyone about Saturday.&rsquo;</span></div>
+      <div class="why"><b>Why:</b> Role, task, and format are all specified.</div></div>
+    <div class="q"><span class="qnum">q013 &middot; description</span><span class="scen">Scenario</span><p class="qtext">A draft is accurate but reads too stiffly for your team. Best next step?</p>
+      <div class="opt"><span>A. Send it &mdash; accuracy is what matters</span></div>
+      <div class="opt correct"><span>B. Reply asking for a warmer, more conversational version &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Rewrite the whole thing yourself</span></div>
+      <div class="opt"><span>D. Ask a colleague to rewrite it</span></div>
+      <div class="why"><b>Why:</b> Tone is adjustable with one follow-up instruction.</div></div>
+    <div class="q"><span class="qnum">q014 &middot; description</span><p class="qtext">Why does &ldquo;write something for work&rdquo; produce a weak result?</p>
+      <div class="opt"><span>A. The AI cannot write at work topics</span></div>
+      <div class="opt correct"><span>B. It leaves the AI to guess the role, the task, and the format &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. It is too short to be processed</span></div>
+      <div class="opt"><span>D. Work topics require technical prompts</span></div>
+      <div class="why"><b>Why:</b> Vague requests force guesses; the formula removes them.</div></div>
+    <div class="q"><span class="qnum">q015 &middot; description</span><p class="qtext">Treating the first AI answer as a draft rather than a final result is:</p>
+      <div class="opt"><span>A. A waste of time &mdash; the first answer is fixed</span></div>
+      <div class="opt correct"><span>B. The normal way to work; refining is expected &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Only necessary for long documents</span></div>
+      <div class="opt"><span>D. A sign the request was invalid</span></div>
+      <div class="why"><b>Why:</b> AI use is a back-and-forth, not a single exchange.</div></div>
+    <div class="q"><span class="qnum">q016 &middot; email</span><span class="scen">Scenario</span><p class="qtext">You must send 40 similar reminder emails with small differences. Best AI approach?</p>
+      <div class="opt"><span>A. Write all 40 by hand to be safe</span></div>
+      <div class="opt correct"><span>B. Ask AI for a clear template you personalise for each recipient, and review each before sending &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Send one email to all 40 with no changes</span></div>
+      <div class="opt"><span>D. Avoid AI entirely</span></div>
+      <div class="why"><b>Why:</b> Delegation + Description + review (Diligence).</div></div>
+    <div class="q"><span class="qnum">q017 &middot; email</span><p class="qtext">A vendor's email is long and unclear. The most useful single request is:</p>
+      <div class="opt"><span>A. &lsquo;Make this shorter&rsquo;</span></div>
+      <div class="opt correct"><span>B. &lsquo;Summarise this in three points and list what I need to do, with deadlines&rsquo; &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. &lsquo;Is this important?&rsquo;</span></div>
+      <div class="opt"><span>D. &lsquo;Reply to this&rsquo;</span></div>
+      <div class="why"><b>Why:</b> Asking for action items separately is what makes a summary useful.</div></div>
+    <div class="q"><span class="qnum">q018 &middot; email</span><span class="scen">Scenario</span><p class="qtext">AI drafts a reply that sounds slightly wrong for your culture or context. Best step?</p>
+      <div class="opt"><span>A. Send it anyway</span></div>
+      <div class="opt correct"><span>B. Adjust it, or tell AI the context and ask again; you stay responsible for the final message &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Blame the AI</span></div>
+      <div class="opt"><span>D. Never reply</span></div>
+      <div class="why"><b>Why:</b> Human judgement stays in control &mdash; Discernment + Diligence.</div></div>
+    <div class="q"><span class="qnum">q019 &middot; email</span><span class="scen">Scenario</span><p class="qtext">A customer writes an angry, unfair email. What is the best use of AI here?</p>
+      <div class="opt"><span>A. Ask for a reply that matches their tone</span></div>
+      <div class="opt correct"><span>B. Ask for a calm, professional reply that addresses their actual concern &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Ask AI to decide whether to reply at all</span></div>
+      <div class="opt"><span>D. Ask AI to send a reply directly</span></div>
+      <div class="why"><b>Why:</b> Difficult replies are where a calm draft helps most.</div></div>
+    <div class="q"><span class="qnum">q020 &middot; email</span><p class="qtext">You ask AI to fix the grammar in your reply. What should you add to the request?</p>
+      <div class="opt"><span>A. Ask it to make the email longer</span></div>
+      <div class="opt correct"><span>B. Ask it to keep your meaning unchanged &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Ask it to add more formal vocabulary</span></div>
+      <div class="opt"><span>D. Ask it to remove all punctuation</span></div>
+      <div class="why"><b>Why:</b> A clean-up can quietly change meaning unless you ask it not to.</div></div>
+    <div class="q"><span class="qnum">q021 &middot; email</span><p class="qtext">After a grammar clean-up, what should you check most carefully?</p>
+      <div class="opt"><span>A. The font</span></div>
+      <div class="opt correct"><span>B. That names, dates, and amounts survived the rewrite unchanged &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. The number of paragraphs</span></div>
+      <div class="opt"><span>D. Whether it uses long words</span></div>
+      <div class="why"><b>Why:</b> Polished drafts look finished, which makes changed facts easy to miss.</div></div>
+    <div class="q"><span class="qnum">q022 &middot; email</span><p class="qtext">Turning three rough bullet points into a polished email is an example of using AI to:</p>
+      <div class="opt"><span>A. Replace your judgement entirely</span></div>
+      <div class="opt correct"><span>B. Delegate the drafting while you keep control of the message &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Avoid ever writing again</span></div>
+      <div class="opt"><span>D. Send email without reading</span></div>
+      <div class="why"><b>Why:</b> Delegation: hand over drafting, keep judgement.</div></div>
+    <div class="q"><span class="qnum">q023 &middot; email</span><span class="scen">Scenario</span><p class="qtext">An AI summary of a long email is shorter but you cannot see the deadline you remember. You should:</p>
+      <div class="opt"><span>A. Assume the deadline was not important</span></div>
+      <div class="opt correct"><span>B. Check the original and ask for a corrected summary that includes all dates &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Trust the summary</span></div>
+      <div class="opt"><span>D. Delete the original</span></div>
+      <div class="why"><b>Why:</b> Dates and conditions are exactly what summaries drop.</div></div>
+    <div class="q"><span class="qnum">q024 &middot; email</span><p class="qtext">Which detail most improves a request for an email draft?</p>
+      <div class="opt correct"><span>A. Saying who it is going to and how formal it should be &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Saying which day of the week it is</span></div>
+      <div class="opt"><span>C. Saying how long you have worked at the company</span></div>
+      <div class="opt"><span>D. Saying which device you are using</span></div>
+      <div class="why"><b>Why:</b> Audience and tone shape the draft more than anything else.</div></div>
+    <div class="q"><span class="qnum">q025 &middot; sheets</span><span class="scen">Scenario</span><p class="qtext">You want a tracker for training completion across 20 people. Best first move?</p>
+      <div class="opt correct"><span>A. Describe the columns and goal to AI and ask it to set up a simple sheet structure &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Memorise all 20 statuses</span></div>
+      <div class="opt"><span>C. Avoid a tracker</span></div>
+      <div class="opt"><span>D. Paste everyone's personal ID numbers into AI</span></div>
+      <div class="why"><b>Why:</b> Describe-the-goal for Sheets. Option D would violate Diligence.</div></div>
+    <div class="q"><span class="qnum">q026 &middot; sheets</span><p class="qtext">When asking for a formula, which detail matters most?</p>
+      <div class="opt"><span>A. The colour of the cells</span></div>
+      <div class="opt correct"><span>B. Which columns and rows the data is in, and that it is Google Sheets &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. How many people use the sheet</span></div>
+      <div class="opt"><span>D. When the sheet was created</span></div>
+      <div class="why"><b>Why:</b> Naming the range and the tool removes the two most common guesses.</div></div>
+    <div class="q"><span class="qnum">q027 &middot; sheets</span><span class="scen">Scenario</span><p class="qtext">A cell shows an error after you paste an AI formula. The most useful thing to send back is:</p>
+      <div class="opt"><span>A. A description of how the sheet looks</span></div>
+      <div class="opt correct"><span>B. The formula together with the exact error text shown &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. A screenshot request</span></div>
+      <div class="opt"><span>D. Nothing &mdash; try a different formula</span></div>
+      <div class="why"><b>Why:</b> The error text usually identifies the problem immediately.</div></div>
+    <div class="q"><span class="qnum">q028 &middot; sheets</span><p class="qtext">You inherit a sheet with a formula nobody understands. Best use of AI?</p>
+      <div class="opt correct"><span>A. Ask it to explain the formula in plain words, step by step &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>B. Delete the formula</span></div>
+      <div class="opt"><span>C. Copy the formula into every cell</span></div>
+      <div class="opt"><span>D. Rebuild the sheet from scratch</span></div>
+      <div class="why"><b>Why:</b> Understanding via explanation is Discernment.</div></div>
+    <div class="q"><span class="qnum">q029 &middot; sheets</span><span class="scen">Scenario</span><p class="qtext">A colleague asks you to tidy a customer list with real names and emails. What do you do?</p>
+      <div class="opt"><span>A. Paste the list into AI and ask for it cleaned</span></div>
+      <div class="opt correct"><span>B. Describe the pattern and ask for a formula to split the columns, without pasting the data &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Ask AI to log into the sheet</span></div>
+      <div class="opt"><span>D. Email the list to yourself first, then paste it</span></div>
+      <div class="why"><b>Why:</b> Personal data stays out; the formula does the work in place.</div></div>
+    <div class="q"><span class="qnum">q030 &middot; sheets</span><p class="qtext">After a formula produces a total you will report, the right habit is to:</p>
+      <div class="opt"><span>A. Trust it because the formula came from AI</span></div>
+      <div class="opt correct"><span>B. Spot-check the result against a few values you can verify yourself &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Recalculate the entire sheet by hand</span></div>
+      <div class="opt"><span>D. Round the number to be safe</span></div>
+      <div class="why"><b>Why:</b> A wrong total you do not notice is worse than no total.</div></div>
+    <div class="q"><span class="qnum">q031 &middot; responsible</span><p class="qtext">Which action violates safe AI use?</p>
+      <div class="opt"><span>A. Asking AI to explain a formula</span></div>
+      <div class="opt correct"><span>B. Pasting a client's confidential contract into a public AI tool &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Asking AI to reword a routine notice</span></div>
+      <div class="opt"><span>D. Asking AI for a Sheets tip</span></div>
+      <div class="why"><b>Why:</b> Confidential data must never be pasted &mdash; Diligence.</div></div>
+    <div class="q"><span class="qnum">q032 &middot; responsible</span><span class="scen">Scenario</span><p class="qtext">AI gives a confident answer you can't verify for an official report. You should:</p>
+      <div class="opt"><span>A. Publish it &mdash; confidence means correctness</span></div>
+      <div class="opt correct"><span>B. Verify from a trusted source or leave it out until confirmed &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Add three more unverified facts</span></div>
+      <div class="opt"><span>D. Delete the report</span></div>
+      <div class="why"><b>Why:</b> High-stakes facts require verification &mdash; Diligence.</div></div>
+    <div class="q"><span class="qnum">q033 &middot; responsible</span><p class="qtext">When is it MOST appropriate to rely on AI without much checking?</p>
+      <div class="opt"><span>A. For legal or financial decisions</span></div>
+      <div class="opt correct"><span>B. For low-stakes drafting you'll still read, like rewording a routine note &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. For confidential data handling</span></div>
+      <div class="opt"><span>D. For final facts in an official report</span></div>
+      <div class="why"><b>Why:</b> Low-stakes, reviewed tasks are the safe zone.</div></div>
+    <div class="q"><span class="qnum">q034 &middot; responsible</span><p class="qtext">What is the useful question to ask before deciding how much to check an AI output?</p>
+      <div class="opt"><span>A. How long did the AI take to answer?</span></div>
+      <div class="opt correct"><span>B. What happens if this is wrong and I do not notice? &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. How confident does the answer sound?</span></div>
+      <div class="opt"><span>D. How long is the answer?</span></div>
+      <div class="why"><b>Why:</b> Consequence of an unnoticed error sets the level of checking needed.</div></div>
+    <div class="q"><span class="qnum">q035 &middot; responsible</span><span class="scen">Scenario</span><p class="qtext">You need help phrasing feedback about an employee's missed deadlines. Safest approach?</p>
+      <div class="opt"><span>A. Paste the full performance record and ask for wording</span></div>
+      <div class="opt correct"><span>B. Ask the general question about phrasing feedback on missed deadlines, with no identifying details &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Paste the record with the name removed but everything else intact</span></div>
+      <div class="opt"><span>D. Ask a colleague to paste it instead</span></div>
+      <div class="why"><b>Why:</b> Keep identifying details out; the general question gets you the same help.</div></div>
+    <div class="q"><span class="qnum">q036 &middot; responsible</span><p class="qtext">Why is a confidently worded AI answer not evidence that it is correct?</p>
+      <div class="opt"><span>A. Because AI always hedges when unsure</span></div>
+      <div class="opt correct"><span>B. Because AI produces fluent text regardless of whether the content is accurate &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Because confident answers are usually shorter</span></div>
+      <div class="opt"><span>D. Because confidence only applies to numbers</span></div>
+      <div class="why"><b>Why:</b> There is no wobble in the tone to signal uncertainty.</div></div>
+    <div class="q"><span class="qnum">q037 &middot; responsible</span><span class="scen">Scenario</span><p class="qtext">The AI cites a report to support a statistic. What is the correct next step?</p>
+      <div class="opt"><span>A. Use it &mdash; a citation means it is verified</span></div>
+      <div class="opt correct"><span>B. Check that the report exists and actually says what is claimed &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Ask the AI to confirm its own citation</span></div>
+      <div class="opt"><span>D. Add the citation without reading it</span></div>
+      <div class="why"><b>Why:</b> Sources can be invented too; verify the source itself.</div></div>
+    <div class="q"><span class="qnum">q038 &middot; responsible</span><p class="qtext">Which of these is safe to send to a public AI tool?</p>
+      <div class="opt"><span>A. A supplier's signed pricing agreement</span></div>
+      <div class="opt correct"><span>B. A general question about how to structure a project update &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. A spreadsheet of employee salaries</span></div>
+      <div class="opt"><span>D. An API key you need explained</span></div>
+      <div class="why"><b>Why:</b> General, non-identifying questions carry no confidential content.</div></div>
+    <div class="q"><span class="qnum">q039 &middot; responsible</span><p class="qtext">The single most important habit before sending anything AI helped you write is to:</p>
+      <div class="opt"><span>A. Send it faster than usual</span></div>
+      <div class="opt correct"><span>B. Read and review it yourself first &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Add more text</span></div>
+      <div class="opt"><span>D. Forward it to AI again</span></div>
+      <div class="why"><b>Why:</b> You are responsible for what you send, regardless of who drafted it.</div></div>
+    <div class="q"><span class="qnum">q040 &middot; responsible</span><p class="qtext">Which item is most likely to be invented by AI without warning?</p>
+      <div class="opt"><span>A. A request to shorten a paragraph</span></div>
+      <div class="opt correct"><span>B. A specific statistic with a percentage and a year &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. A suggestion to use a bulleted list</span></div>
+      <div class="opt"><span>D. A rewording of your own sentence</span></div>
+      <div class="why"><b>Why:</b> Specific numbers, dates, and named sources are the common invention points.</div></div>
+    <div class="q"><span class="qnum">q041 &middot; responsible</span><span class="scen">Scenario</span><p class="qtext">You are asked to summarise a client contract. What is the responsible approach?</p>
+      <div class="opt"><span>A. Paste the contract and ask for a summary</span></div>
+      <div class="opt correct"><span>B. Ask what sections a services contract usually contains and what to look for, then read it yourself &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Paste only the first half of the contract</span></div>
+      <div class="opt"><span>D. Ask AI to summarise it and send the summary to the client</span></div>
+      <div class="why"><b>Why:</b> Keep the confidential document out; use AI for the general knowledge.</div></div>
+    <div class="q"><span class="qnum">q042 &middot; responsible</span><p class="qtext">&ldquo;AI is powerful but not magical.&rdquo; The best interpretation is:</p>
+      <div class="opt"><span>A. AI never makes mistakes</span></div>
+      <div class="opt correct"><span>B. AI's usefulness and safety depend on how thoughtfully you use it &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. AI should never be used</span></div>
+      <div class="opt"><span>D. AI replaces your judgement</span></div>
+      <div class="why"><b>Why:</b> Value comes from thoughtful engagement, not from the tool alone.</div></div>
+    <div class="q"><span class="qnum">q043 &middot; responsible</span><p class="qtext">Your review pass on an AI draft should include checking that:</p>
+      <div class="opt"><span>A. The draft is longer than your original notes</span></div>
+      <div class="opt correct"><span>B. Nothing invented has been added and nothing needed is missing &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. The AI used formal vocabulary</span></div>
+      <div class="opt"><span>D. The draft matches the AI's previous answers</span></div>
+      <div class="why"><b>Why:</b> Both additions and omissions are failure modes worth checking.</div></div>
+    <div class="q"><span class="qnum">q044 &middot; responsible</span><span class="scen">Scenario</span><p class="qtext">A colleague suggests pasting a customer list into AI because &ldquo;it is only for formatting&rdquo;. Best response?</p>
+      <div class="opt"><span>A. Agree &mdash; formatting is low risk</span></div>
+      <div class="opt correct"><span>B. Explain that the purpose does not change the fact that the data leaves the company, and offer the formula approach instead &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Paste it but delete the chat afterwards</span></div>
+      <div class="opt"><span>D. Paste only half the list</span></div>
+      <div class="why"><b>Why:</b> Intent does not change what has been sent. Once pasted, it cannot be taken back.</div></div>
+    <div class="q"><span class="qnum">q045 &middot; responsible</span><p class="qtext">Who is accountable for an error in a message that AI drafted and you sent?</p>
+      <div class="opt"><span>A. The AI tool provider</span></div>
+      <div class="opt correct"><span>B. You &mdash; the person who sent it &nbsp;<b>&#10003; correct</b></span></div>
+      <div class="opt"><span>C. Nobody, since it was automated</span></div>
+      <div class="opt"><span>D. The recipient, for not checking</span></div>
+      <div class="why"><b>Why:</b> AI helped write it; you remain responsible for it.</div></div>
+  </div>
+</div></main>
+</body>
+</html>
