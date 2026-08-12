@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- build: 2026081202 -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 2 &mdash; Email with AI &middot; SF Knowledge Hub</title>
+  <style>
+*{box-sizing:border-box}
+:root{
+  --blue:#1a6eb5; --blue-dk:#14558c; --blue-tint:#eaf3fb; --blue-line:#c5ddf0;
+  --ink:#12212e; --muted:#5b6b7a; --line:#dde5ec; --bg:#fff; --shell:#f6f9fc;
+  --ok:#1e7f4f; --ok-tint:#e9f6ef; --ok-line:#b6e0c8;
+  --no:#b3261e; --no-tint:#fdeceb; --no-line:#f2c3c0;
+  --warn:#9a5b06; --warn-tint:#fdf3e5; --warn-line:#f0d9b3;
+  --r:10px;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--shell); color:var(--ink);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+a{color:var(--blue-dk)}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+
+/* top bar */
+.topbar{background:var(--blue);color:#fff}
+.topbar .wrap{display:flex;align-items:center;gap:14px;min-height:56px;flex-wrap:wrap}
+.topbar a{color:#fff;text-decoration:none;font-size:14px;opacity:.92}
+.topbar a:hover{opacity:1;text-decoration:underline}
+.topbar .brand{font-weight:700;letter-spacing:.2px;margin-right:auto;font-size:15px}
+.topbar .who{font-size:13px;opacity:.9}
+
+/* hero */
+.hero{background:#fff;border-bottom:1px solid var(--line);padding:30px 0 26px}
+.hero h1{margin:0 0 6px;font-size:29px;line-height:1.22;letter-spacing:-.4px}
+.hero .sub{margin:0;color:var(--muted);font-size:15px}
+.eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.1px;
+  text-transform:uppercase;color:var(--blue-dk);background:var(--blue-tint);
+  border:1px solid var(--blue-line);border-radius:999px;padding:3px 10px;margin-bottom:12px}
+
+main{padding:26px 0 60px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;margin:0 0 16px}
+.card h2{margin:0 0 4px;font-size:20px;letter-spacing:-.2px}
+.card h3{margin:22px 0 8px;font-size:16px}
+.card p{margin:0 0 12px}
+.card p:last-child{margin-bottom:0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue);
+  background:var(--blue);color:#fff;font:inherit;font-size:15px;font-weight:600;
+  padding:10px 18px;border-radius:8px;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--blue-dk);border-color:var(--blue-dk)}
+.btn.ghost{background:#fff;color:var(--blue-dk)}
+.btn.ghost:hover{background:var(--blue-tint)}
+.btn.quiet{background:#fff;color:var(--muted);border-color:var(--line)}
+.btn.quiet:hover{background:var(--shell);color:var(--ink)}
+.btn[disabled],.btn.is-disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
+.btn:focus-visible,a:focus-visible,input:focus-visible,label:focus-visible{
+  outline:3px solid #7fb6e4;outline-offset:2px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+
+/* pills / status */
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;
+  border:1px solid var(--line);background:var(--shell);color:var(--muted)}
+.pill.done{background:var(--ok-tint);border-color:var(--ok-line);color:var(--ok)}
+.pill.lock{background:var(--shell);border-color:var(--line);color:var(--muted)}
+.pill.open{background:var(--blue-tint);border-color:var(--blue-line);color:var(--blue-dk)}
+
+/* callouts */
+.callout{background:var(--blue-tint);border:1px solid var(--blue-line);border-left:4px solid var(--blue);
+  border-radius:8px;padding:14px 16px;margin:16px 0}
+.callout b{display:block;margin-bottom:4px;color:var(--blue-dk)}
+.callout p{margin:0}
+.prompt{background:#f4f7fa;border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+  margin:14px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.6}
+.prompt-label{display:block;font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.9px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+ul.examples,ul.ref{margin:10px 0 14px;padding-left:22px}
+ul.examples li,ul.ref li{margin-bottom:7px}
+ul.examples.danger li{color:#7d1f19}
+ol.formula{margin:10px 0 14px;padding-left:22px}
+ol.formula li{margin-bottom:7px}
+table.compare{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+table.compare th,table.compare td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+
+/* progress rail */
+.rail{display:flex;gap:6px;margin:14px 0 0}
+.rail span{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.rail span.on{background:var(--blue)}
+.railnote{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* sections */
+.section{border:1px solid var(--line);border-radius:var(--r);background:#fff;margin:0 0 14px;overflow:hidden}
+.section.locked{opacity:.62}
+.section-head{display:flex;align-items:center;gap:12px;padding:16px 20px;background:#fff;
+  border:0;width:100%;text-align:left;font:inherit;cursor:pointer}
+.section.locked .section-head{cursor:not-allowed}
+.section-num{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--blue-dk);
+  background:var(--blue-tint);border:1px solid var(--blue-line);border-radius:6px;padding:3px 8px}
+.section-title{flex:1;font-size:17px;font-weight:600}
+.section-body{padding:0 20px 20px;border-top:1px solid var(--line)}
+.section-body>*:first-child{margin-top:16px}
+.section[hidden]{display:none}
+
+/* quiz */
+.q{border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:0 0 14px;background:#fff}
+.q .qnum{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.q .scen{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--warn);background:var(--warn-tint);border:1px solid var(--warn-line);
+  border-radius:999px;padding:2px 9px;margin-left:8px}
+.q .qtext{margin:8px 0 14px;font-weight:600;font-size:16px}
+.opt{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;
+  padding:11px 14px;margin-bottom:9px;cursor:pointer;background:#fff}
+.opt:hover{border-color:var(--blue-line);background:var(--blue-tint)}
+.opt input{margin:4px 0 0;flex:0 0 auto}
+.opt.correct{background:var(--ok-tint);border-color:var(--ok-line)}
+.opt.wrong{background:var(--no-tint);border-color:var(--no-line)}
+.graded .opt{cursor:default}
+.graded .opt:hover{border-color:var(--line);background:#fff}
+.graded .opt.correct:hover{background:var(--ok-tint);border-color:var(--ok-line)}
+.graded .opt.wrong:hover{background:var(--no-tint);border-color:var(--no-line)}
+.why{margin-top:10px;font-size:14px;padding:10px 13px;border-radius:7px;
+  background:var(--shell);border:1px solid var(--line);color:var(--muted)}
+.why b{color:var(--ink)}
+
+/* result banner */
+.result{border-radius:var(--r);padding:18px 20px;margin:0 0 16px;border:1px solid}
+.result.pass{background:var(--ok-tint);border-color:var(--ok-line)}
+.result.fail{background:var(--no-tint);border-color:var(--no-line)}
+.result h2{margin:0 0 4px;font-size:19px}
+.result.pass h2{color:var(--ok)}
+.result.fail h2{color:var(--no)}
+.result p{margin:0;font-size:15px}
+
+/* dashboard modules */
+.mod{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--r);
+  background:#fff;padding:18px 20px;margin:0 0 12px;text-decoration:none;color:inherit}
+.mod:hover{border-color:var(--blue-line);box-shadow:0 1px 3px rgba(26,110,181,.12)}
+.mod.locked{opacity:.6;pointer-events:none}
+.mod .idx{flex:0 0 42px;height:42px;border-radius:9px;background:var(--blue-tint);
+  border:1px solid var(--blue-line);color:var(--blue-dk);display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:16px}
+.mod.done .idx{background:var(--ok-tint);border-color:var(--ok-line);color:var(--ok)}
+.mod .txt{flex:1;min-width:0}
+.mod .txt h3{margin:0 0 3px;font-size:17px}
+.mod .txt p{margin:0;font-size:14px;color:var(--muted)}
+.mod .focus{display:inline-block;margin-top:7px;font-size:12px;color:var(--blue-dk);
+  background:var(--blue-tint);border:1px solid var(--blue-line);border-radius:999px;padding:2px 9px}
+
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.meta div{background:#fff;padding:13px 16px}
+.meta dt{font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.meta dd{margin:3px 0 0;font-size:15px;font-weight:600}
+
+.timer{position:sticky;top:0;z-index:20;background:#fff;border:1px solid var(--line);
+  border-radius:var(--r);padding:12px 18px;margin:0 0 16px;display:flex;
+  align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.timer .clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:19px}
+.timer .clock.low{color:var(--no)}
+
+.note{font-size:14px;color:var(--muted)}
+.foot{border-top:1px solid var(--line);margin-top:32px;padding-top:18px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px}
+.msg{padding:12px 16px;border-radius:8px;margin:0 0 14px;font-size:14px;border:1px solid}
+.msg.info{background:var(--blue-tint);border-color:var(--blue-line);color:var(--blue-dk)}
+.msg.warnbox{background:var(--warn-tint);border-color:var(--warn-line);color:var(--warn)}
+.msg.bad{background:var(--no-tint);border-color:var(--no-line);color:var(--no)}
+.hide{display:none !important}
+
+@media (max-width:640px){
+  .hero h1{font-size:24px}
+  .card{padding:18px 16px}
+  .section-head{padding:14px 16px}
+  .section-body{padding:0 16px 18px}
+  table.compare{font-size:14px}
+  table.compare th,table.compare td{padding:8px 9px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <span class="brand">SF Knowledge Hub</span>
+    <a href="ai-fluency-dashboard.html?v=2026081202">Dashboard</a>
+    <a href="../sf-certs-hub.html">Course map</a>
+    <span class="who" id="whoami"></span>
+  </div>
+</header>
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Module 2 &middot; 4D focus: Delegation + Description + Discernment</span>
+    <h1>Email with AI</h1>
+    <p class="sub">Draft from bullet points, reply with the right tone, fix and translate, and summarise long messages.</p>
+    <div class="rail" id="rail"><span></span><span></span><span></span><span></span></div>
+    <p class="railnote" id="railnote">Sections complete: 0 of 4</p>
+  </div>
+</div>
+
+<main><div class="wrap">
+
+  <div id="gate" class="msg info">Loading your progress&hellip;</div>
+
+      <section class="section" data-section="2.1" id="sec-0">
+        <button type="button" class="section-head" data-idx="0">
+          <span class="section-num">2.1</span>
+          <span class="section-title">Drafting an email from a few bullet points</span>
+          <span class="pill js-secpill">Open</span>
+        </button>
+        <div class="section-body">
+
+                <p>The slowest part of writing an email is usually the first sentence. You already know
+                what you want to say &mdash; you just have to turn it into something sendable. That turning
+                is the part you hand over.</p>
+                <h3>How it looks</h3>
+                <p>Write your points as roughly as you like, then ask for the email:</p>
+                <div class="prompt">
+                  <span class="prompt-label">You type</span>
+                  I'm an office admin. Turn these into a short, polite email to the housekeeping vendor:
+                  <br>&bull; cleaning was missed on 2nd floor Tuesday
+                  <br>&bull; need it covered this week
+                  <br>&bull; ask them to confirm the day
+                </div>
+                <p>You get back a complete, professional email. You read it, change anything that is not
+                quite right, and send it.</p>
+                <div class="callout">
+                  <b>This is Delegation in practice</b>
+                  <p>You kept the judgement &mdash; what to say, who to say it to, whether the tone fits
+                  this vendor. You handed over the typing. That split is the point.</p>
+                </div>
+                <h3>Getting a better first draft</h3>
+                <ul class="examples">
+                  <li>Say who it goes to: &ldquo;to a vendor we work with often&rdquo; reads differently from &ldquo;to a vendor we are unhappy with&rdquo;.</li>
+                  <li>Say the length: &ldquo;under 100 words&rdquo;.</li>
+                  <li>Say what must appear: &ldquo;include the date and ask for confirmation&rdquo;.</li>
+                </ul>
+          <div class="btnrow">
+            <button type="button" class="btn js-seccomplete" data-idx="0">Mark section complete</button>
+          </div>
+        </div>
+      </section>
+      <section class="section locked" data-section="2.2" id="sec-1">
+        <button type="button" class="section-head" data-idx="1">
+          <span class="section-num">2.2</span>
+          <span class="section-title">Replying, and adjusting tone</span>
+          <span class="pill js-secpill">Locked</span>
+        </button>
+        <div class="section-body" hidden>
+
+                <p>Paste the email you received, say what you want to reply, and ask for a draft. This
+                works even when the incoming message is long or unclear.</p>
+                <div class="prompt">
+                  <span class="prompt-label">You type</span>
+                  Here is an email I received. Draft a reply saying we can meet on Thursday but not
+                  Wednesday, and ask them to send the agenda in advance. Keep it warm and brief.
+                </div>
+                <h3>Tone is a dial you control</h3>
+                <p>If the draft is not pitched right, name the tone you want and ask again:</p>
+                <table class="compare">
+                  <tr><th>You want</th><th>You say</th></tr>
+                  <tr><td>Warmer</td><td>&ldquo;make this friendlier, like writing to a colleague&rdquo;</td></tr>
+                  <tr><td>Firmer</td><td>&ldquo;make this firmer &mdash; polite but clear that the deadline is not moving&rdquo;</td></tr>
+                  <tr><td>More formal</td><td>&ldquo;rewrite this in formal business English for an external client&rdquo;</td></tr>
+                  <tr><td>Calmer</td><td>&ldquo;the original is rude; keep my reply calm and professional&rdquo;</td></tr>
+                </table>
+                <div class="callout">
+                  <b>Difficult replies are where this helps most</b>
+                  <p>When a message annoys you, your own first draft is usually the one you should not
+                  send. Asking for a calm, professional reply that addresses the concern gives you
+                  something better than what you would have written while irritated.</p>
+                </div>
+          <div class="btnrow">
+            <button type="button" class="btn js-seccomplete" data-idx="1">Mark section complete</button>
+          </div>
+        </div>
+      </section>
+      <section class="section locked" data-section="2.3" id="sec-2">
+        <button type="button" class="section-head" data-idx="2">
+          <span class="section-num">2.3</span>
+          <span class="section-title">Fixing grammar, and translating</span>
+          <span class="pill js-secpill">Locked</span>
+        </button>
+        <div class="section-body" hidden>
+
+                <p>Write your reply however it comes out. Then ask for a clean-up before it goes anywhere:</p>
+                <div class="prompt">
+                  <span class="prompt-label">You type</span>
+                  Fix the grammar and make this sound professional. Keep it short and keep my meaning.
+                </div>
+                <p>Ask it to keep your meaning. Without that, a clean-up can quietly change what you were
+                trying to say.</p>
+                <h3>Working across languages</h3>
+                <ul class="examples">
+                  <li>Write in your own language and ask for the English version.</li>
+                  <li>Paste an English email and ask for it in your language so you are sure you understood it.</li>
+                  <li>Ask: &ldquo;does this sound polite in English?&rdquo; &mdash; useful when a direct translation lands harsher than you intended.</li>
+                </ul>
+                <div class="callout">
+                  <b>Read the cleaned-up version</b>
+                  <p>A polished draft is easy to trust because it looks finished. Check that the facts,
+                  names, dates, and amounts survived the rewrite unchanged.</p>
+                </div>
+          <div class="btnrow">
+            <button type="button" class="btn js-seccomplete" data-idx="2">Mark section complete</button>
+          </div>
+        </div>
+      </section>
+      <section class="section locked" data-section="2.4" id="sec-3">
+        <button type="button" class="section-head" data-idx="3">
+          <span class="section-num">2.4</span>
+          <span class="section-title">Summarising a long email</span>
+          <span class="pill js-secpill">Locked</span>
+        </button>
+        <div class="section-body" hidden>
+
+                <p>A long, rambling email with the important thing buried in paragraph six is a good use
+                of AI. Paste it and ask for what you actually need:</p>
+                <div class="prompt">
+                  <span class="prompt-label">You type</span>
+                  Summarise this email in 3 bullet points, and list anything I need to do with its
+                  deadline.
+                </div>
+                <p>Asking for action items separately is what makes the summary useful rather than just
+                shorter.</p>
+                <h3>Then check it</h3>
+                <p>Summaries lose things. A date, a condition, a name, a &ldquo;only if&rdquo; &mdash; these
+                are exactly the details that get dropped, and exactly the details that matter.</p>
+                <div class="callout">
+                  <b>The habit worth building</b>
+                  <p>Scan the original for numbers and dates, and confirm each one appears in the summary.
+                  It takes seconds and it catches the failure that costs the most.</p>
+                </div>
+                <p>If something is missing, say so: &ldquo;you left out the deadline &mdash; redo the summary
+                and include all dates.&rdquo;</p>
+          <div class="btnrow">
+            <button type="button" class="btn js-seccomplete" data-idx="3">Mark section complete</button>
+          </div>
+        </div>
+      </section>
+
+  <div class="card" id="checkCard">
+    <h2>Knowledge check</h2>
+    <p class="note">5 questions &middot; pass mark 70% (4 of 5 correct)</p>
+    <div id="quizWrap" hidden>
+      <div id="questions"></div>
+      <div class="btnrow">
+        <button type="button" class="btn" id="submitQuiz">Submit answers</button>
+        <button type="button" class="btn quiet hide" id="retryQuiz">Try again</button>
+      </div>
+    </div>
+    <div id="quizLock" class="msg warnbox">Complete all 4 sections above to unlock the knowledge check.</div>
+  </div>
+
+  <div id="resultWrap"></div>
+
+  <div class="card" id="completeCard">
+    <h2>Finish this module</h2>
+    <p class="note" id="completeNote">Pass the knowledge check, then mark the module complete.</p>
+    <div class="btnrow">
+      <button type="button" class="btn is-disabled" id="markComplete">Mark module as complete</button>
+      <button type="button" class="btn quiet" id="redoModule">Redo module</button>
+    </div>
+    <p class="note" id="redoNote" style="margin-top:10px">Redo module resets this page so you can read
+    and answer again. It does not remove a completion already recorded for you.</p>
+  </div>
+
+    <div class="foot">
+      <div><a href="ai-fluency-module-1.html?v=2026081202">&larr; Talking to AI clearly</a></div>
+      <div><a href="ai-fluency-module-3.html?v=2026081202">Google Sheets with AI &rarr;</a></div>
+    </div>
+</div></main>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+
+/* ==========================================================================
+   PLATFORM INTEGRATION
+   ==========================================================================
+   FIREBASE_CONFIG  project sfcertification-grafana, same app as every other
+                    Knowledge Hub page.
+   CP_COURSE_ID     Firestore `courses` doc id for this course. Identical in
+                    all 7 HTML files -- if it is ever changed, change it in
+                    all 7 and bump every one of them.
+   ========================================================================== */
+var FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q",
+  authDomain: "sfcertification-grafana.firebaseapp.com",
+  projectId: "sfcertification-grafana",
+  storageBucket: "sfcertification-grafana.firebasestorage.app",
+  messagingSenderId: "227322696511",
+  appId: "1:227322696511:web:12e7ced7dd3d45fa06798a"
+};
+var CP_COURSE_ID   = "xCmMdbucSkMMrUUf6kuK";
+var COURSE_ID      = "aiFluency2026SFCert";
+var COURSE_TITLE   = "AI Fluency for Non-Technical People";
+var CERT_TITLE     = "SF Certified AI Fluency Practitioner";
+var MODULE_KEYS    = ["ai-fluency-module-0", "ai-fluency-module-1", "ai-fluency-module-2", "ai-fluency-module-3", "ai-fluency-module-4"];
+
+if (!firebase.apps.length) { firebase.initializeApp(FIREBASE_CONFIG); }
+var auth = firebase.auth();
+var db   = firebase.firestore();
+
+var KH = {
+  user: null,
+
+  /* Resolve the signed-in user, or send them to the course map to sign in. */
+  requireUser: function (cb) {
+    auth.onAuthStateChanged(function (u) {
+      if (!u) { window.location.href = "../sf-certs-hub.html"; return; }
+      KH.user = u;
+      var el = document.getElementById("whoami");
+      if (el) el.textContent = u.email || "";
+      cb(u);
+    });
+  },
+
+  /* Read courseProgress/{uid} -> courses[CP_COURSE_ID].modules */
+  loadProgress: function () {
+    return db.collection("courseProgress").doc(KH.user.uid).get().then(function (snap) {
+      if (!snap.exists) return {};
+      var d = snap.data() || {};
+      var c = (d.courses || {})[CP_COURSE_ID] || {};
+      return c.modules || {};
+    }).catch(function (e) {
+      console.error("courseProgress read failed", e);
+      return {};
+    });
+  },
+
+  /* Merge-write one module's state. moduleKey === filename minus .html */
+  saveModule: function (moduleKey, payload) {
+    var mod = {};
+    mod[moduleKey] = Object.assign({
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, payload);
+
+    var courses = {};
+    courses[CP_COURSE_ID] = {
+      courseId: COURSE_ID,
+      courseTitle: COURSE_TITLE,
+      modules: mod,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    return db.collection("courseProgress").doc(KH.user.uid).set({
+      version: 2,
+      uid: KH.user.uid,
+      email: KH.user.email || "",
+      displayName: KH.user.displayName || "",
+      courses: courses,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  },
+
+  /* Write one exam attempt. */
+  saveExamAttempt: function (attempt) {
+    var email = (KH.user.email || "unknown").toLowerCase();
+    return db.collection("courseExamResults").doc(email)
+      .collection("courses").doc(COURSE_ID)
+      .collection("attempts").add(Object.assign({
+        uid: KH.user.uid,
+        email: email,
+        displayName: KH.user.displayName || "",
+        courseId: COURSE_ID,
+        courseTitle: COURSE_TITLE,
+        certification: CERT_TITLE,
+        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, attempt));
+  },
+
+  countAttempts: function () {
+    var email = (KH.user.email || "unknown").toLowerCase();
+    return db.collection("courseExamResults").doc(email)
+      .collection("courses").doc(COURSE_ID)
+      .collection("attempts").get()
+      .then(function (s) { return s.size; })
+      .catch(function () { return 0; });
+  },
+
+  esc: function (s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  },
+
+  /* Deterministic shuffle so a learner sees a stable set within one attempt. */
+  shuffle: function (arr, seed) {
+    var a = arr.slice(), s = seed || Date.now();
+    var rnd = function () { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; };
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(rnd() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+};
+
+
+var MODULE_KEY  = "ai-fluency-module-2";
+var MODULE_NUM  = 2;
+var IS_GATE     = false;
+var N_SECTIONS  = 4;
+var PASS_PCT    = 70;
+var QUIZ        = [{"scenario": true, "q": "A vendor sends a long, confusing email. You need the key points fast. Best use of AI?", "opts": ["Paste it in and ask for a short summary with any action items", "Forward it to everyone and hope someone reads it", "Reply immediately without reading", "Delete it"], "a": 0, "why": "Summarising long messages is a core email use &mdash; Discernment then checks the summary."}, {"q": "You've written a rough reply with some grammar mistakes. The safest, most useful step before sending?", "opts": ["Send it as-is", "Ask AI to fix grammar and improve tone, then read it before sending", "Ask AI to send it for you automatically", "Never send emails again"], "a": 1, "why": "AI improves the draft; you still review before sending (Diligence)."}, {"scenario": true, "q": "A customer's email is rude. You must reply professionally. Best instruction to the AI?", "opts": ["&lsquo;Write an equally rude reply&rsquo;", "&lsquo;Draft a calm, polite, professional reply that addresses their concern&rsquo;", "&lsquo;Ignore them&rsquo;", "&lsquo;Reply in one word&rsquo;"], "a": 1, "why": "AI helps keep difficult replies professional."}, {"q": "The AI summarises a long email but leaves out a deadline you saw in the original. What should you do?", "opts": ["Trust the summary completely", "Notice the gap and add the deadline &mdash; always check the summary against the original", "Delete the original email", "Assume the deadline doesn't matter"], "a": 1, "why": "Discernment: AI summaries can miss details; verify against the source."}, {"q": "Turning three rough bullet points into a polished email is an example of using AI to:", "opts": ["Replace your judgement entirely", "Delegate the drafting while you keep control of the message", "Avoid ever writing again", "Send email without reading"], "a": 1, "why": "Delegation: hand over drafting, keep judgement."}];
+
+var secDone = new Array(N_SECTIONS).fill(false);
+var quizPassed = false;
+var lastScore = null;
+var recorded = false;
+
+function ceilNeed() { return Math.ceil(QUIZ.length * PASS_PCT / 100); }
+
+/* ---------- sections ---------- */
+function paintSections() {
+  var done = secDone.filter(Boolean).length;
+  var rail = document.getElementById("rail");
+  if (rail) {
+    Array.prototype.forEach.call(rail.children, function (sp, i) {
+      sp.className = secDone[i] ? "on" : "";
+    });
+    document.getElementById("railnote").textContent =
+      "Sections complete: " + done + " of " + N_SECTIONS;
+  }
+  for (var i = 0; i < N_SECTIONS; i++) {
+    var el = document.getElementById("sec-" + i);
+    if (!el) continue;
+    var pill = el.querySelector(".js-secpill");
+    var unlocked = (i === 0) || secDone[i - 1];
+    el.classList.toggle("locked", !unlocked);
+    if (secDone[i])      { pill.className = "pill done js-secpill"; pill.textContent = "Complete"; }
+    else if (unlocked)   { pill.className = "pill open js-secpill"; pill.textContent = "Open"; }
+    else                 { pill.className = "pill lock js-secpill"; pill.textContent = "Locked"; }
+    var btn = el.querySelector(".js-seccomplete");
+    if (btn) {
+      btn.disabled = secDone[i];
+      btn.textContent = secDone[i] ? "Section complete" : "Mark section complete";
+      btn.classList.toggle("is-disabled", secDone[i]);
+    }
+  }
+  if (!IS_GATE) {
+    var all = done === N_SECTIONS;
+    document.getElementById("quizWrap").hidden = !all;
+    document.getElementById("quizLock").classList.toggle("hide", all);
+  }
+}
+
+function wireSections() {
+  document.querySelectorAll(".section-head").forEach(function (h) {
+    h.addEventListener("click", function () {
+      var i = +h.dataset.idx;
+      var el = document.getElementById("sec-" + i);
+      if (el.classList.contains("locked")) return;
+      var body = el.querySelector(".section-body");
+      body.hidden = !body.hidden;
+    });
+  });
+  document.querySelectorAll(".js-seccomplete").forEach(function (b) {
+    b.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var i = +b.dataset.idx;
+      secDone[i] = true;
+      paintSections();
+      persistSections();
+      var nxt = document.getElementById("sec-" + (i + 1));
+      if (nxt) {
+        nxt.querySelector(".section-body").hidden = false;
+        nxt.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        document.getElementById("checkCard").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+}
+
+function persistSections() {
+  if (IS_GATE) return;
+  var map = {};
+  secDone.forEach(function (v, i) { map["s" + i] = !!v; });
+  KH.saveModule(MODULE_KEY, {
+    moduleNumber: MODULE_NUM,
+    sections: map,
+    sectionsComplete: secDone.filter(Boolean).length
+  }).catch(function (e) { console.error("section save failed", e); });
+}
+
+/* ---------- quiz ---------- */
+function renderQuiz() {
+  var host = document.getElementById("questions");
+  host.className = "";
+  host.innerHTML = QUIZ.map(function (q, i) {
+    var opts = q.opts.map(function (o, j) {
+      return '<label class="opt" data-i="' + i + '" data-j="' + j + '">' +
+             '<input type="radio" name="q' + i + '" value="' + j + '">' +
+             '<span>' + o + '</span></label>';
+    }).join("");
+    return '<div class="q" id="q' + i + '">' +
+           '<span class="qnum">Question ' + (i + 1) + ' of ' + QUIZ.length + '</span>' +
+           (q.scenario ? '<span class="scen">Scenario</span>' : '') +
+           '<p class="qtext">' + q.q + '</p>' + opts +
+           '<div class="why hide"><b>Why:</b> ' + q.why + '</div></div>';
+  }).join("");
+  document.getElementById("submitQuiz").classList.remove("hide");
+  document.getElementById("retryQuiz").classList.add("hide");
+  document.getElementById("resultWrap").innerHTML = "";
+}
+
+function gradeQuiz() {
+  var score = 0, unanswered = [];
+  QUIZ.forEach(function (q, i) {
+    var sel = document.querySelector('input[name="q' + i + '"]:checked');
+    if (!sel) { unanswered.push(i + 1); return; }
+    if (+sel.value === q.a) score++;
+  });
+  if (unanswered.length) {
+    document.getElementById("resultWrap").innerHTML =
+      '<div class="msg bad">Answer every question before submitting. Missing: ' +
+      unanswered.join(", ") + '.</div>';
+    document.getElementById("resultWrap").scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  document.getElementById("questions").className = "graded";
+  QUIZ.forEach(function (q, i) {
+    var sel = document.querySelector('input[name="q' + i + '"]:checked');
+    document.querySelectorAll('.opt[data-i="' + i + '"]').forEach(function (lab) {
+      var j = +lab.dataset.j;
+      if (j === q.a) lab.classList.add("correct");
+      else if (sel && +sel.value === j) lab.classList.add("wrong");
+      lab.querySelector("input").disabled = true;
+    });
+    document.querySelector("#q" + i + " .why").classList.remove("hide");
+  });
+
+  var pct = Math.round(score / QUIZ.length * 100);
+  quizPassed = pct >= PASS_PCT;
+  lastScore = { score: score, total: QUIZ.length, percent: pct };
+
+  document.getElementById("resultWrap").innerHTML =
+    '<div class="result ' + (quizPassed ? "pass" : "fail") + '">' +
+    '<h2>' + (quizPassed ? "Passed" : "Not passed yet") + '</h2>' +
+    '<p>You scored <b>' + score + ' of ' + QUIZ.length + '</b> (' + pct + '%). ' +
+    'Pass mark is ' + PASS_PCT + '% (' + ceilNeed() + ' correct). ' +
+    (quizPassed
+      ? 'You can now mark this module complete.'
+      : 'Read the explanations above, then try again.') + '</p></div>';
+
+  document.getElementById("submitQuiz").classList.add("hide");
+  document.getElementById("retryQuiz").classList.remove("hide");
+  paintComplete();
+  document.getElementById("resultWrap").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+/* ---------- completion ---------- */
+function paintComplete() {
+  var btn = document.getElementById("markComplete");
+  var note = document.getElementById("completeNote");
+  var ready = quizPassed && (IS_GATE || secDone.every(Boolean));
+  btn.classList.toggle("is-disabled", !ready);
+  if (recorded) {
+    btn.classList.add("is-disabled");
+    btn.textContent = "Module complete";
+    note.textContent = "This module is recorded as complete for you.";
+  } else if (ready) {
+    note.textContent = IS_GATE
+      ? "Gate quiz passed. Mark the module complete to unlock Modules 1 to 4."
+      : "Knowledge check passed. Mark the module complete to record it.";
+  }
+}
+
+function wireComplete() {
+  document.getElementById("markComplete").addEventListener("click", function () {
+    if (this.classList.contains("is-disabled")) return;
+    var btn = this;
+    btn.classList.add("is-disabled");
+    btn.textContent = "Saving\u2026";
+    var payload = {
+      moduleNumber: MODULE_NUM,
+      complete: true,
+      completedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    if (lastScore) {
+      payload.checkScore = lastScore.score;
+      payload.checkTotal = lastScore.total;
+      payload.checkPercent = lastScore.percent;
+    }
+    if (!IS_GATE) {
+      var map = {};
+      secDone.forEach(function (v, i) { map["s" + i] = !!v; });
+      payload.sections = map;
+      payload.sectionsComplete = secDone.filter(Boolean).length;
+    }
+    KH.saveModule(MODULE_KEY, payload).then(function () {
+      recorded = true;
+      btn.textContent = "Module complete";
+      paintComplete();
+      document.getElementById("gate").className = "msg info";
+      document.getElementById("gate").innerHTML =
+        'Module recorded as complete. <a href="' + DASH_HREF + '">Back to the dashboard</a>.';
+    }).catch(function (e) {
+      console.error(e);
+      btn.classList.remove("is-disabled");
+      btn.textContent = "Mark module as complete";
+      document.getElementById("gate").className = "msg bad";
+      document.getElementById("gate").textContent =
+        "Could not save. Check your connection and try again.";
+    });
+  });
+
+  /* UI-only reset: does not touch Firestore. */
+  document.getElementById("redoModule").addEventListener("click", function () {
+    quizPassed = false; lastScore = null;
+    if (!IS_GATE) {
+      secDone = new Array(N_SECTIONS).fill(false);
+      document.querySelectorAll(".section-body").forEach(function (b, i) { b.hidden = i !== 0; });
+      paintSections();
+    }
+    renderQuiz();
+    paintComplete();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+
+var DASH_HREF = "ai-fluency-dashboard.html?v=2026081202";
+
+document.addEventListener("DOMContentLoaded", function () {
+  wireSections();
+  wireComplete();
+  renderQuiz();
+  paintSections();
+
+  KH.requireUser(function () {
+    KH.loadProgress().then(function (mods) {
+      var gate = document.getElementById("gate");
+
+      if (MODULE_NUM > 0) {
+        var m0 = mods[MODULE_KEYS[0]];
+        if (!m0 || !m0.complete) {
+          gate.className = "msg warnbox";
+          gate.innerHTML = 'Module 0 is not complete yet. ' +
+            '<a href="' + MOD0_HREF + '">Pass the gate quiz</a> to unlock this module.';
+          document.querySelectorAll(".section, #checkCard, #completeCard")
+            .forEach(function (el) { el.classList.add("hide"); });
+          return;
+        }
+      }
+
+      var mine = mods[MODULE_KEY] || {};
+      if (mine.sections && !IS_GATE) {
+        for (var i = 0; i < N_SECTIONS; i++) secDone[i] = !!mine.sections["s" + i];
+      }
+      if (mine.complete) {
+        recorded = true;
+        if (!IS_GATE) secDone = new Array(N_SECTIONS).fill(true);
+      }
+      paintSections();
+      paintComplete();
+
+      gate.className = "msg info";
+      gate.innerHTML = recorded
+        ? 'You have already completed this module. Read it again any time.'
+        : (IS_GATE ? 'Answer all ' + QUIZ.length + ' questions to unlock the rest of the course.'
+                   : 'Work through the sections in order, then take the knowledge check.');
+    });
+  });
+
+  document.getElementById("submitQuiz").addEventListener("click", gradeQuiz);
+  document.getElementById("retryQuiz").addEventListener("click", renderQuiz);
+});
+var MOD0_HREF = "ai-fluency-module-0.html?v=2026081202";
+</script>
+</body>
+</html>
