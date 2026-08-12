@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- build: 2026081202 -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Certification exam &mdash; SF Certified AI Fluency Practitioner &middot; SF Knowledge Hub</title>
+  <style>
+*{box-sizing:border-box}
+:root{
+  --blue:#1a6eb5; --blue-dk:#14558c; --blue-tint:#eaf3fb; --blue-line:#c5ddf0;
+  --ink:#12212e; --muted:#5b6b7a; --line:#dde5ec; --bg:#fff; --shell:#f6f9fc;
+  --ok:#1e7f4f; --ok-tint:#e9f6ef; --ok-line:#b6e0c8;
+  --no:#b3261e; --no-tint:#fdeceb; --no-line:#f2c3c0;
+  --warn:#9a5b06; --warn-tint:#fdf3e5; --warn-line:#f0d9b3;
+  --r:10px;
+}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--shell); color:var(--ink);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+a{color:var(--blue-dk)}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+
+/* top bar */
+.topbar{background:var(--blue);color:#fff}
+.topbar .wrap{display:flex;align-items:center;gap:14px;min-height:56px;flex-wrap:wrap}
+.topbar a{color:#fff;text-decoration:none;font-size:14px;opacity:.92}
+.topbar a:hover{opacity:1;text-decoration:underline}
+.topbar .brand{font-weight:700;letter-spacing:.2px;margin-right:auto;font-size:15px}
+.topbar .who{font-size:13px;opacity:.9}
+
+/* hero */
+.hero{background:#fff;border-bottom:1px solid var(--line);padding:30px 0 26px}
+.hero h1{margin:0 0 6px;font-size:29px;line-height:1.22;letter-spacing:-.4px}
+.hero .sub{margin:0;color:var(--muted);font-size:15px}
+.eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.1px;
+  text-transform:uppercase;color:var(--blue-dk);background:var(--blue-tint);
+  border:1px solid var(--blue-line);border-radius:999px;padding:3px 10px;margin-bottom:12px}
+
+main{padding:26px 0 60px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;margin:0 0 16px}
+.card h2{margin:0 0 4px;font-size:20px;letter-spacing:-.2px}
+.card h3{margin:22px 0 8px;font-size:16px}
+.card p{margin:0 0 12px}
+.card p:last-child{margin-bottom:0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--blue);
+  background:var(--blue);color:#fff;font:inherit;font-size:15px;font-weight:600;
+  padding:10px 18px;border-radius:8px;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--blue-dk);border-color:var(--blue-dk)}
+.btn.ghost{background:#fff;color:var(--blue-dk)}
+.btn.ghost:hover{background:var(--blue-tint)}
+.btn.quiet{background:#fff;color:var(--muted);border-color:var(--line)}
+.btn.quiet:hover{background:var(--shell);color:var(--ink)}
+.btn[disabled],.btn.is-disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
+.btn:focus-visible,a:focus-visible,input:focus-visible,label:focus-visible{
+  outline:3px solid #7fb6e4;outline-offset:2px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+
+/* pills / status */
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;
+  border:1px solid var(--line);background:var(--shell);color:var(--muted)}
+.pill.done{background:var(--ok-tint);border-color:var(--ok-line);color:var(--ok)}
+.pill.lock{background:var(--shell);border-color:var(--line);color:var(--muted)}
+.pill.open{background:var(--blue-tint);border-color:var(--blue-line);color:var(--blue-dk)}
+
+/* callouts */
+.callout{background:var(--blue-tint);border:1px solid var(--blue-line);border-left:4px solid var(--blue);
+  border-radius:8px;padding:14px 16px;margin:16px 0}
+.callout b{display:block;margin-bottom:4px;color:var(--blue-dk)}
+.callout p{margin:0}
+.prompt{background:#f4f7fa;border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+  margin:14px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.6}
+.prompt-label{display:block;font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.9px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+ul.examples,ul.ref{margin:10px 0 14px;padding-left:22px}
+ul.examples li,ul.ref li{margin-bottom:7px}
+ul.examples.danger li{color:#7d1f19}
+ol.formula{margin:10px 0 14px;padding-left:22px}
+ol.formula li{margin-bottom:7px}
+table.compare{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+table.compare th,table.compare td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+
+/* progress rail */
+.rail{display:flex;gap:6px;margin:14px 0 0}
+.rail span{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.rail span.on{background:var(--blue)}
+.railnote{font-size:13px;color:var(--muted);margin-top:8px}
+
+/* sections */
+.section{border:1px solid var(--line);border-radius:var(--r);background:#fff;margin:0 0 14px;overflow:hidden}
+.section.locked{opacity:.62}
+.section-head{display:flex;align-items:center;gap:12px;padding:16px 20px;background:#fff;
+  border:0;width:100%;text-align:left;font:inherit;cursor:pointer}
+.section.locked .section-head{cursor:not-allowed}
+.section-num{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--blue-dk);
+  background:var(--blue-tint);border:1px solid var(--blue-line);border-radius:6px;padding:3px 8px}
+.section-title{flex:1;font-size:17px;font-weight:600}
+.section-body{padding:0 20px 20px;border-top:1px solid var(--line)}
+.section-body>*:first-child{margin-top:16px}
+.section[hidden]{display:none}
+
+/* quiz */
+.q{border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin:0 0 14px;background:#fff}
+.q .qnum{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.q .scen{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--warn);background:var(--warn-tint);border:1px solid var(--warn-line);
+  border-radius:999px;padding:2px 9px;margin-left:8px}
+.q .qtext{margin:8px 0 14px;font-weight:600;font-size:16px}
+.opt{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;
+  padding:11px 14px;margin-bottom:9px;cursor:pointer;background:#fff}
+.opt:hover{border-color:var(--blue-line);background:var(--blue-tint)}
+.opt input{margin:4px 0 0;flex:0 0 auto}
+.opt.correct{background:var(--ok-tint);border-color:var(--ok-line)}
+.opt.wrong{background:var(--no-tint);border-color:var(--no-line)}
+.graded .opt{cursor:default}
+.graded .opt:hover{border-color:var(--line);background:#fff}
+.graded .opt.correct:hover{background:var(--ok-tint);border-color:var(--ok-line)}
+.graded .opt.wrong:hover{background:var(--no-tint);border-color:var(--no-line)}
+.why{margin-top:10px;font-size:14px;padding:10px 13px;border-radius:7px;
+  background:var(--shell);border:1px solid var(--line);color:var(--muted)}
+.why b{color:var(--ink)}
+
+/* result banner */
+.result{border-radius:var(--r);padding:18px 20px;margin:0 0 16px;border:1px solid}
+.result.pass{background:var(--ok-tint);border-color:var(--ok-line)}
+.result.fail{background:var(--no-tint);border-color:var(--no-line)}
+.result h2{margin:0 0 4px;font-size:19px}
+.result.pass h2{color:var(--ok)}
+.result.fail h2{color:var(--no)}
+.result p{margin:0;font-size:15px}
+
+/* dashboard modules */
+.mod{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--r);
+  background:#fff;padding:18px 20px;margin:0 0 12px;text-decoration:none;color:inherit}
+.mod:hover{border-color:var(--blue-line);box-shadow:0 1px 3px rgba(26,110,181,.12)}
+.mod.locked{opacity:.6;pointer-events:none}
+.mod .idx{flex:0 0 42px;height:42px;border-radius:9px;background:var(--blue-tint);
+  border:1px solid var(--blue-line);color:var(--blue-dk);display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:16px}
+.mod.done .idx{background:var(--ok-tint);border-color:var(--ok-line);color:var(--ok)}
+.mod .txt{flex:1;min-width:0}
+.mod .txt h3{margin:0 0 3px;font-size:17px}
+.mod .txt p{margin:0;font-size:14px;color:var(--muted)}
+.mod .focus{display:inline-block;margin-top:7px;font-size:12px;color:var(--blue-dk);
+  background:var(--blue-tint);border:1px solid var(--blue-line);border-radius:999px;padding:2px 9px}
+
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.meta div{background:#fff;padding:13px 16px}
+.meta dt{font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.meta dd{margin:3px 0 0;font-size:15px;font-weight:600}
+
+.timer{position:sticky;top:0;z-index:20;background:#fff;border:1px solid var(--line);
+  border-radius:var(--r);padding:12px 18px;margin:0 0 16px;display:flex;
+  align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.timer .clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:19px}
+.timer .clock.low{color:var(--no)}
+
+.note{font-size:14px;color:var(--muted)}
+.foot{border-top:1px solid var(--line);margin-top:32px;padding-top:18px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px}
+.msg{padding:12px 16px;border-radius:8px;margin:0 0 14px;font-size:14px;border:1px solid}
+.msg.info{background:var(--blue-tint);border-color:var(--blue-line);color:var(--blue-dk)}
+.msg.warnbox{background:var(--warn-tint);border-color:var(--warn-line);color:var(--warn)}
+.msg.bad{background:var(--no-tint);border-color:var(--no-line);color:var(--no)}
+.hide{display:none !important}
+
+@media (max-width:640px){
+  .hero h1{font-size:24px}
+  .card{padding:18px 16px}
+  .section-head{padding:14px 16px}
+  .section-body{padding:0 16px 18px}
+  table.compare{font-size:14px}
+  table.compare th,table.compare td{padding:8px 9px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <span class="brand">SF Knowledge Hub</span>
+    <a href="ai-fluency-dashboard.html?v=2026081202">Dashboard</a>
+    <a href="../sf-certs-hub.html">Course map</a>
+    <span class="who" id="whoami"></span>
+  </div>
+</header>
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Culminating exam</span>
+    <h1>SF Certified AI Fluency Practitioner</h1>
+    <p class="sub">15 questions &middot; 75% to pass &middot; 25 minutes &middot; 3 attempts</p>
+  </div>
+</div>
+
+<main><div class="wrap">
+
+  <div id="gate" class="msg info">Checking your eligibility&hellip;</div>
+
+  <div class="card" id="startCard">
+    <h2>Before you begin</h2>
+    <p>Questions are drawn from a bank of 45, weighted towards scenarios and responsible use, so a
+    re-sit will not be the same paper.</p>
+    <dl class="meta">
+      <div><dt>Questions</dt><dd>15</dd></div>
+      <div><dt>Pass mark</dt><dd>75%</dd></div>
+      <div><dt>Time limit</dt><dd>25 minutes</dd></div>
+      <div><dt>Attempts allowed</dt><dd>3</dd></div>
+      <div><dt>Attempts used</dt><dd id="usedAttempts">&mdash;</dd></div>
+    </dl>
+    <p class="note" style="margin-top:14px">The timer starts when you select Start exam. If time runs
+    out, the paper is submitted with the answers you have given.</p>
+    <div class="btnrow">
+      <button type="button" class="btn is-disabled" id="startExam">Start exam</button>
+    </div>
+  </div>
+
+  <div id="examArea" class="hide">
+    <div class="timer">
+      <span>Time remaining</span>
+      <span class="clock" id="clock">--:--</span>
+    </div>
+    <div id="questions"></div>
+    <div class="btnrow">
+      <button type="button" class="btn" id="submitExam">Submit exam</button>
+    </div>
+  </div>
+
+  <div id="resultWrap"></div>
+
+    <div class="foot">
+      <div><a href="ai-fluency-dashboard.html?v=2026081202">&larr; Dashboard</a></div>
+      <div><a href="ai-fluency-module-4.html?v=2026081202">Using AI responsibly &rarr;</a></div>
+    </div>
+</div></main>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="ai-fluency-question-bank.js?v=2026081201"></script>
+<script>
+
+/* ==========================================================================
+   PLATFORM INTEGRATION
+   ==========================================================================
+   FIREBASE_CONFIG  project sfcertification-grafana, same app as every other
+                    Knowledge Hub page.
+   CP_COURSE_ID     Firestore `courses` doc id for this course. Identical in
+                    all 7 HTML files -- if it is ever changed, change it in
+                    all 7 and bump every one of them.
+   ========================================================================== */
+var FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q",
+  authDomain: "sfcertification-grafana.firebaseapp.com",
+  projectId: "sfcertification-grafana",
+  storageBucket: "sfcertification-grafana.firebasestorage.app",
+  messagingSenderId: "227322696511",
+  appId: "1:227322696511:web:12e7ced7dd3d45fa06798a"
+};
+var CP_COURSE_ID   = "xCmMdbucSkMMrUUf6kuK";
+var COURSE_ID      = "aiFluency2026SFCert";
+var COURSE_TITLE   = "AI Fluency for Non-Technical People";
+var CERT_TITLE     = "SF Certified AI Fluency Practitioner";
+var MODULE_KEYS    = ["ai-fluency-module-0", "ai-fluency-module-1", "ai-fluency-module-2", "ai-fluency-module-3", "ai-fluency-module-4"];
+
+if (!firebase.apps.length) { firebase.initializeApp(FIREBASE_CONFIG); }
+var auth = firebase.auth();
+var db   = firebase.firestore();
+
+var KH = {
+  user: null,
+
+  /* Resolve the signed-in user, or send them to the course map to sign in. */
+  requireUser: function (cb) {
+    auth.onAuthStateChanged(function (u) {
+      if (!u) { window.location.href = "../sf-certs-hub.html"; return; }
+      KH.user = u;
+      var el = document.getElementById("whoami");
+      if (el) el.textContent = u.email || "";
+      cb(u);
+    });
+  },
+
+  /* Read courseProgress/{uid} -> courses[CP_COURSE_ID].modules */
+  loadProgress: function () {
+    return db.collection("courseProgress").doc(KH.user.uid).get().then(function (snap) {
+      if (!snap.exists) return {};
+      var d = snap.data() || {};
+      var c = (d.courses || {})[CP_COURSE_ID] || {};
+      return c.modules || {};
+    }).catch(function (e) {
+      console.error("courseProgress read failed", e);
+      return {};
+    });
+  },
+
+  /* Merge-write one module's state. moduleKey === filename minus .html */
+  saveModule: function (moduleKey, payload) {
+    var mod = {};
+    mod[moduleKey] = Object.assign({
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, payload);
+
+    var courses = {};
+    courses[CP_COURSE_ID] = {
+      courseId: COURSE_ID,
+      courseTitle: COURSE_TITLE,
+      modules: mod,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    return db.collection("courseProgress").doc(KH.user.uid).set({
+      version: 2,
+      uid: KH.user.uid,
+      email: KH.user.email || "",
+      displayName: KH.user.displayName || "",
+      courses: courses,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  },
+
+  /* Write one exam attempt. */
+  saveExamAttempt: function (attempt) {
+    var email = (KH.user.email || "unknown").toLowerCase();
+    return db.collection("courseExamResults").doc(email)
+      .collection("courses").doc(COURSE_ID)
+      .collection("attempts").add(Object.assign({
+        uid: KH.user.uid,
+        email: email,
+        displayName: KH.user.displayName || "",
+        courseId: COURSE_ID,
+        courseTitle: COURSE_TITLE,
+        certification: CERT_TITLE,
+        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, attempt));
+  },
+
+  countAttempts: function () {
+    var email = (KH.user.email || "unknown").toLowerCase();
+    return db.collection("courseExamResults").doc(email)
+      .collection("courses").doc(COURSE_ID)
+      .collection("attempts").get()
+      .then(function (s) { return s.size; })
+      .catch(function () { return 0; });
+  },
+
+  esc: function (s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  },
+
+  /* Deterministic shuffle so a learner sees a stable set within one attempt. */
+  shuffle: function (arr, seed) {
+    var a = arr.slice(), s = seed || Date.now();
+    var rnd = function () { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; };
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(rnd() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+};
+
+
+var N_Q        = 15;
+var PASS_PCT   = 75;
+var MINUTES    = 25;
+var MAX_TRIES  = 3;
+
+var paper = [], startedAt = null, timerId = null, remaining = MINUTES * 60, used = 0, submitted = false;
+
+function buildPaper() {
+  var quota = window.AI_FLUENCY_QUOTA, bank = window.AI_FLUENCY_BANK, seed = Date.now(), out = [];
+  Object.keys(quota).forEach(function (topic) {
+    var pool = bank.filter(function (q) { return q.topic === topic; });
+    out = out.concat(KH.shuffle(pool, seed + topic.length).slice(0, quota[topic]));
+  });
+  // Top up from anything unused if a quota outran its pool.
+  if (out.length < N_Q) {
+    var ids = out.map(function (q) { return q.id; });
+    var rest = bank.filter(function (q) { return ids.indexOf(q.id) === -1; });
+    out = out.concat(KH.shuffle(rest, seed).slice(0, N_Q - out.length));
+  }
+  out = out.slice(0, N_Q);
+
+  // Scenario floor: the exam is deliberately weighted towards scenarios, so top up
+  // if the random draw came in light. Swaps prefer the same topic to keep the quota shape.
+  var minScen = window.AI_FLUENCY_SCENARIO_MIN || 0;
+  var have = out.filter(function (q) { return q.scenario; }).length;
+  if (have < minScen) {
+    var picked = out.map(function (q) { return q.id; });
+    var spare = KH.shuffle(bank.filter(function (q) {
+      return q.scenario && picked.indexOf(q.id) === -1;
+    }), seed + 3);
+    for (var k = 0; k < spare.length && have < minScen; k++) {
+      var slot = -1;
+      for (var n = 0; n < out.length; n++) {
+        if (!out[n].scenario && out[n].topic === spare[k].topic) { slot = n; break; }
+      }
+      if (slot === -1) {
+        for (var n2 = 0; n2 < out.length; n2++) { if (!out[n2].scenario) { slot = n2; break; } }
+      }
+      if (slot === -1) break;
+      out[slot] = spare[k];
+      have++;
+    }
+  }
+  return KH.shuffle(out, seed + 7);
+}
+
+function renderPaper() {
+  document.getElementById("questions").innerHTML = paper.map(function (q, i) {
+    var opts = q.opts.map(function (o, j) {
+      return '<label class="opt" data-i="' + i + '" data-j="' + j + '">' +
+             '<input type="radio" name="e' + i + '" value="' + j + '">' +
+             '<span>' + o + '</span></label>';
+    }).join("");
+    return '<div class="q" id="e' + i + '">' +
+           '<span class="qnum">Question ' + (i + 1) + ' of ' + paper.length + '</span>' +
+           (q.scenario ? '<span class="scen">Scenario</span>' : '') +
+           '<p class="qtext">' + q.q + '</p>' + opts +
+           '<div class="why hide"><b>Why:</b> ' + q.why + '</div></div>';
+  }).join("");
+}
+
+function tick() {
+  remaining--;
+  var m = Math.floor(remaining / 60), s = remaining % 60;
+  var c = document.getElementById("clock");
+  c.textContent = (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+  c.classList.toggle("low", remaining <= 120);
+  if (remaining <= 0) { clearInterval(timerId); submitExam(true); }
+}
+
+function startExam() {
+  paper = buildPaper();
+  renderPaper();
+  startedAt = Date.now();
+  document.getElementById("startCard").classList.add("hide");
+  document.getElementById("examArea").classList.remove("hide");
+  document.getElementById("gate").classList.add("hide");
+  timerId = setInterval(tick, 1000);
+  tick();
+  window.addEventListener("beforeunload", warnLeaving);
+}
+
+function warnLeaving(e) { if (!submitted) { e.preventDefault(); e.returnValue = ""; } }
+
+function submitExam(auto) {
+  if (submitted) return;
+  var answers = [], score = 0, missing = [];
+  paper.forEach(function (q, i) {
+    var sel = document.querySelector('input[name="e' + i + '"]:checked');
+    var chosen = sel ? +sel.value : null;
+    if (chosen === null) missing.push(i + 1);
+    if (chosen === q.a) score++;
+    answers.push({ id: q.id, topic: q.topic, chosen: chosen, correct: q.a, right: chosen === q.a });
+  });
+
+  if (!auto && missing.length) {
+    document.getElementById("resultWrap").innerHTML =
+      '<div class="msg bad">Answer every question before submitting. Missing: ' +
+      missing.join(", ") + '.</div>';
+    document.getElementById("resultWrap").scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  submitted = true;
+  clearInterval(timerId);
+  window.removeEventListener("beforeunload", warnLeaving);
+
+  var pct = Math.round(score / paper.length * 100);
+  var passed = pct >= PASS_PCT;
+
+  document.getElementById("questions").className = "graded";
+  paper.forEach(function (q, i) {
+    var sel = document.querySelector('input[name="e' + i + '"]:checked');
+    document.querySelectorAll('.opt[data-i="' + i + '"]').forEach(function (lab) {
+      var j = +lab.dataset.j;
+      if (j === q.a) lab.classList.add("correct");
+      else if (sel && +sel.value === j) lab.classList.add("wrong");
+      lab.querySelector("input").disabled = true;
+    });
+    document.querySelector("#e" + i + " .why").classList.remove("hide");
+  });
+  document.getElementById("submitExam").classList.add("is-disabled");
+
+  document.getElementById("resultWrap").innerHTML =
+    '<div class="result ' + (passed ? "pass" : "fail") + '">' +
+    '<h2>' + (passed ? "Passed \u2014 " + CERT_TITLE : "Not passed") + '</h2>' +
+    '<p>You scored <b>' + score + ' of ' + paper.length + '</b> (' + pct + '%). Pass mark is ' +
+    PASS_PCT + '%.' + (auto ? ' Time ran out and the paper was submitted automatically.' : '') +
+    (passed ? ' Your result has been recorded.'
+            : ' Attempts used: ' + (used + 1) + ' of ' + MAX_TRIES + '.') + '</p></div>';
+
+  KH.saveExamAttempt({
+    attemptNumber: used + 1,
+    score: score,
+    total: paper.length,
+    percent: pct,
+    passed: passed,
+    passMark: PASS_PCT,
+    autoSubmitted: !!auto,
+    durationSec: Math.round((Date.now() - startedAt) / 1000),
+    answers: answers
+  }).catch(function (e) { console.error("attempt save failed", e); });
+
+  document.getElementById("resultWrap").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("startExam").addEventListener("click", function () {
+    if (!this.classList.contains("is-disabled")) startExam();
+  });
+  document.getElementById("submitExam").addEventListener("click", function () { submitExam(false); });
+
+  KH.requireUser(function () {
+    Promise.all([KH.loadProgress(), KH.countAttempts()]).then(function (r) {
+      var mods = r[0]; used = r[1];
+      var gate = document.getElementById("gate");
+      document.getElementById("usedAttempts").textContent = used + " of " + MAX_TRIES;
+
+      var missing = MODULE_KEYS.filter(function (k) { return !(mods[k] && mods[k].complete); });
+      if (missing.length) {
+        gate.className = "msg warnbox";
+        gate.innerHTML = 'Complete all five modules before taking the exam. Still to finish: <b>' +
+          missing.length + '</b>. <a href="' + DASH_HREF + '">Back to the dashboard</a>.';
+        return;
+      }
+      if (used >= MAX_TRIES) {
+        gate.className = "msg bad";
+        gate.textContent = "You have used all " + MAX_TRIES +
+          " attempts. Contact Learning & Development to request a reset.";
+        return;
+      }
+      gate.className = "msg info";
+      gate.textContent = "All modules complete. You may begin when ready.";
+      document.getElementById("startExam").classList.remove("is-disabled");
+    });
+  });
+});
+
+var DASH_HREF = "ai-fluency-dashboard.html?v=2026081202";
+</script>
+</body>
+</html>
