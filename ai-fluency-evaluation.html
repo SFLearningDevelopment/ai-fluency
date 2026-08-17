@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- build: 2026081204 -->
+  <!-- build: 2026081205 -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Certification exam &mdash; SF Certified AI Fluency Practitioner &middot; SF Knowledge Hub</title>
@@ -204,7 +204,7 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
 <header class="topbar">
   <div class="wrap">
     <span class="brand">SF Knowledge Hub</span>
-    <a href="ai-fluency-dashboard.html?v=2026081204">Dashboard</a>
+    <a href="ai-fluency-dashboard.html?v=2026081205">Dashboard</a>
     <a href="../sf-certs-hub.html">Course map</a>
     <span class="who" id="whoami"></span>
     <button type="button" class="signout" id="af-signout" hidden>Sign out</button>
@@ -275,8 +275,8 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
   <div id="resultWrap"></div>
 
     <div class="foot">
-      <div><a href="ai-fluency-dashboard.html?v=2026081204">&larr; Dashboard</a></div>
-      <div><a href="ai-fluency-module-4.html?v=2026081204">Using AI responsibly &rarr;</a></div>
+      <div><a href="ai-fluency-dashboard.html?v=2026081205">&larr; Dashboard</a></div>
+      <div><a href="ai-fluency-module-4.html?v=2026081205">Using AI responsibly &rarr;</a></div>
     </div>
 </div></main>
 
@@ -505,31 +505,43 @@ var KH = {
     });
   },
 
-  saveExamAttempt: function (attempt) {
-    var email = (KH.user.email || "unknown").toLowerCase();
-    var t = KH.stamp();
-    return _afDb.collection("courseExamResults").doc(email)
-      .collection("courses").doc(COURSE_ID)
-      .collection("attempts").add(Object.assign({
-        uid: KH.user.uid,
-        email: email,
-        name: KH.user.displayName || email,
-        courseId: COURSE_ID,
-        courseTitle: COURSE_TITLE,
-        certification: CERT_TITLE,
-        submittedOn: t.date,
-        submittedAt: t.time,
-        submittedTs: firebase.firestore.FieldValue.serverTimestamp()
-      }, attempt));
+  /* examResults/{uid} -- one map field per course, keyed by COURSE_ID, matching
+     the shape already in use (attempts / correct / total / score / passed /
+     timeTaken / timedOut / submittedAt). Identity fields sit at the top level
+     as learnerEmail / learnerName. Read-then-merge so other courses survive.
+     Attempts always increment; the stored figures are the BEST attempt, so a
+     failed re-sit after a pass cannot downgrade a learner's result. */
+  saveExamResult: function (r) {
+    var ref = _afDb.collection("examResults").doc(KH.user.uid);
+    return ref.get().then(function (snap) {
+      var data = snap.exists ? (snap.data() || {}) : {};
+      var prev = data[COURSE_ID] || {};
+      var entry = { attempts: (prev.attempts || 0) + 1 };
+
+      var better = (typeof prev.score !== "number") || r.score > prev.score;
+      if (better && !(prev.passed && !r.passed)) {
+        entry.correct     = r.correct;
+        entry.total       = r.total;
+        entry.score       = r.score;
+        entry.passed      = r.passed;
+        entry.timeTaken   = r.timeTaken;
+        entry.timedOut    = r.timedOut;
+        entry.submittedAt = firebase.firestore.FieldValue.serverTimestamp();
+      }
+
+      var payload = {
+        learnerEmail: (KH.user.email || "").toLowerCase(),
+        learnerName:  KH.user.displayName || KH.user.email || ""
+      };
+      payload[COURSE_ID] = entry;
+      return ref.set(payload, { merge: true });
+    });
   },
 
-  countAttempts: function () {
-    var email = (KH.user.email || "unknown").toLowerCase();
-    return _afDb.collection("courseExamResults").doc(email)
-      .collection("courses").doc(COURSE_ID)
-      .collection("attempts").get()
-      .then(function (s) { return s.size; })
-      .catch(function () { return 0; });
+  loadExamResult: function () {
+    return _afDb.collection("examResults").doc(KH.user.uid).get()
+      .then(function (s) { return (s.exists ? (s.data() || {}) : {})[COURSE_ID] || {}; })
+      .catch(function (e) { console.error("examResults read failed", e); return {}; });
   },
 
   isDone: function (courseObj, moduleKey) {
@@ -680,17 +692,14 @@ function submitExam(auto) {
     (passed ? ' Your result has been recorded.'
             : ' Attempts used: ' + (used + 1) + ' of ' + MAX_TRIES + '.') + '</p></div>';
 
-  KH.saveExamAttempt({
-    attemptNumber: used + 1,
-    score: score,
-    total: paper.length,
-    percent: pct,
-    passed: passed,
-    passMark: PASS_PCT,
-    autoSubmitted: !!auto,
-    durationSec: Math.round((Date.now() - startedAt) / 1000),
-    answers: answers
-  }).catch(function (e) { console.error("attempt save failed", e); });
+  KH.saveExamResult({
+    correct:   score,
+    total:     paper.length,
+    score:     pct,
+    passed:    passed,
+    timeTaken: Math.round((Date.now() - startedAt) / 1000),
+    timedOut:  !!auto
+  }).catch(function (e) { console.error("exam result save failed", e); });
 
   document.getElementById("resultWrap").scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -702,8 +711,9 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("submitExam").addEventListener("click", function () { submitExam(false); });
 
   KH.requireUser(function () {
-    Promise.all([KH.loadCourse(), KH.countAttempts()]).then(function (r) {
-      var courseObj = r[0]; used = r[1];
+    Promise.all([KH.loadCourse(), KH.loadExamResult()]).then(function (r) {
+      var courseObj = r[0], exam = r[1] || {};
+      used = exam.attempts || 0;
       var gate = document.getElementById("gate");
       document.getElementById("usedAttempts").textContent = used + " of " + MAX_TRIES;
 
@@ -721,13 +731,18 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
       gate.className = "msg info";
-      gate.textContent = "All modules complete. You may begin when ready.";
+      if (exam.passed) {
+        gate.innerHTML = "You have already passed this exam with <b>" + exam.score +
+          "%</b>. You may re-sit, but your recorded result keeps your best score.";
+      } else {
+        gate.textContent = "All modules complete. You may begin when ready.";
+      }
       document.getElementById("startExam").classList.remove("is-disabled");
     });
   });
 });
 
-var DASH_HREF = "ai-fluency-dashboard.html?v=2026081204";
+var DASH_HREF = "ai-fluency-dashboard.html?v=2026081205";
 </script>
 </body>
 </html>
