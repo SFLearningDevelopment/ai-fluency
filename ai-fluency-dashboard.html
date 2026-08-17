@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- build: 2026081204 -->
+  <!-- build: 2026081205 -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AI Fluency for Non-Technical People &middot; SF Knowledge Hub</title>
@@ -169,6 +169,13 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
 .msg.warnbox{background:var(--warn-tint);border-color:var(--warn-line);color:var(--warn)}
 .msg.bad{background:var(--no-tint);border-color:var(--no-line);color:var(--no)}
 .hide{display:none !important}
+.exam-result{display:block;margin-top:9px;font-size:13px;color:var(--muted)}
+.exam-result[hidden]{display:none}
+.exam-result b{color:var(--ink)}
+.exam-result .verdict{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;
+  border-radius:999px;margin-right:8px}
+.exam-result .verdict.pass{background:var(--ok-tint);border:1px solid var(--ok-line);color:var(--ok)}
+.exam-result .verdict.fail{background:var(--no-tint);border:1px solid var(--no-line);color:var(--no)}
 
 @media (max-width:640px){
   .hero h1{font-size:24px}
@@ -204,7 +211,7 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
 <header class="topbar">
   <div class="wrap">
     <span class="brand">SF Knowledge Hub</span>
-    <a href="ai-fluency-dashboard.html?v=2026081204">Dashboard</a>
+    <a href="ai-fluency-dashboard.html?v=2026081205">Dashboard</a>
     <a href="../sf-certs-hub.html">Course map</a>
     <span class="who" id="whoami"></span>
     <button type="button" class="signout" id="af-signout" hidden>Sign out</button>
@@ -265,7 +272,7 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
   </div>
 
   <h2 style="margin:26px 0 12px;font-size:20px">Modules</h2>
-      <a class="mod" data-key="ai-fluency-module-0" href="ai-fluency-module-0.html?v=2026081204">
+      <a class="mod" data-key="ai-fluency-module-0" href="ai-fluency-module-0.html?v=2026081205">
         <span class="idx">0</span>
         <span class="txt">
           <h3>AI Fluency Foundations <span class="pill lock js-status">Locked</span></h3>
@@ -273,7 +280,7 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
           <span class="focus">4D focus: All four D's</span>
         </span>
       </a>
-      <a class="mod" data-key="ai-fluency-module-1" href="ai-fluency-module-1.html?v=2026081204">
+      <a class="mod" data-key="ai-fluency-module-1" href="ai-fluency-module-1.html?v=2026081205">
         <span class="idx">1</span>
         <span class="txt">
           <h3>Talking to AI clearly <span class="pill lock js-status">Locked</span></h3>
@@ -281,7 +288,7 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
           <span class="focus">4D focus: Description</span>
         </span>
       </a>
-      <a class="mod" data-key="ai-fluency-module-2" href="ai-fluency-module-2.html?v=2026081204">
+      <a class="mod" data-key="ai-fluency-module-2" href="ai-fluency-module-2.html?v=2026081205">
         <span class="idx">2</span>
         <span class="txt">
           <h3>Email with AI <span class="pill lock js-status">Locked</span></h3>
@@ -289,7 +296,7 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
           <span class="focus">4D focus: Delegation + Description + Discernment</span>
         </span>
       </a>
-      <a class="mod" data-key="ai-fluency-module-3" href="ai-fluency-module-3.html?v=2026081204">
+      <a class="mod" data-key="ai-fluency-module-3" href="ai-fluency-module-3.html?v=2026081205">
         <span class="idx">3</span>
         <span class="txt">
           <h3>Google Sheets with AI <span class="pill lock js-status">Locked</span></h3>
@@ -297,7 +304,7 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
           <span class="focus">4D focus: Delegation + Description + Discernment</span>
         </span>
       </a>
-      <a class="mod" data-key="ai-fluency-module-4" href="ai-fluency-module-4.html?v=2026081204">
+      <a class="mod" data-key="ai-fluency-module-4" href="ai-fluency-module-4.html?v=2026081205">
         <span class="idx">4</span>
         <span class="txt">
           <h3>Using AI responsibly <span class="pill lock js-status">Locked</span></h3>
@@ -306,13 +313,14 @@ table.compare th{background:var(--shell);font-size:13px;text-transform:uppercase
         </span>
       </a>
 
-  <a class="mod" id="examCard" data-key="__exam__" href="ai-fluency-evaluation.html?v=2026081204">
+  <a class="mod" id="examCard" data-key="__exam__" href="ai-fluency-evaluation.html?v=2026081205">
     <span class="idx">&#10003;</span>
     <span class="txt">
       <h3>Certification exam <span class="pill lock js-status">Locked</span></h3>
       <p>15 questions drawn from a 45-question bank, so re-sits differ. Pass 75% to earn the
       SF Certified AI Fluency Practitioner certification.</p>
-      <span class="focus">Unlocks when all five modules are complete</span>
+      <span class="focus" id="examFocus">Unlocks when all five modules are complete</span>
+      <span class="exam-result" id="examResult" hidden></span>
     </span>
   </a>
 
@@ -542,31 +550,11 @@ var KH = {
     });
   },
 
-  saveExamAttempt: function (attempt) {
-    var email = (KH.user.email || "unknown").toLowerCase();
-    var t = KH.stamp();
-    return _afDb.collection("courseExamResults").doc(email)
-      .collection("courses").doc(COURSE_ID)
-      .collection("attempts").add(Object.assign({
-        uid: KH.user.uid,
-        email: email,
-        name: KH.user.displayName || email,
-        courseId: COURSE_ID,
-        courseTitle: COURSE_TITLE,
-        certification: CERT_TITLE,
-        submittedOn: t.date,
-        submittedAt: t.time,
-        submittedTs: firebase.firestore.FieldValue.serverTimestamp()
-      }, attempt));
-  },
-
-  countAttempts: function () {
-    var email = (KH.user.email || "unknown").toLowerCase();
-    return _afDb.collection("courseExamResults").doc(email)
-      .collection("courses").doc(COURSE_ID)
-      .collection("attempts").get()
-      .then(function (s) { return s.size; })
-      .catch(function () { return 0; });
+  /* examResults/{uid} -> this course's map field. Written by the exam page. */
+  loadExamResult: function () {
+    return _afDb.collection("examResults").doc(KH.user.uid).get()
+      .then(function (s) { return (s.exists ? (s.data() || {}) : {})[COURSE_ID] || {}; })
+      .catch(function (e) { console.error("examResults read failed", e); return {}; });
   },
 
   isDone: function (courseObj, moduleKey) {
@@ -587,7 +575,8 @@ var KH = {
 
 document.addEventListener("DOMContentLoaded", function () {
   KH.requireUser(function () {
-    KH.loadCourse().then(function (courseObj) {
+    Promise.all([KH.loadCourse(), KH.loadExamResult()]).then(function (res) {
+      var courseObj = res[0], exam = res[1] || {};
       var gate = document.getElementById("gate");
       var doneCount = 0;
 
@@ -607,15 +596,43 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       var all = doneCount === MODULE_KEYS.length;
-      var exam = document.getElementById("examCard");
-      var est  = exam.querySelector(".js-status");
-      if (all) { est.className = "pill open js-status"; est.textContent = "Available"; }
-      else     { exam.classList.add("locked"); }
+      var card = document.getElementById("examCard");
+      var est  = card.querySelector(".js-status");
+      var attempts = exam.attempts || 0;
+      var sat = attempts > 0 && typeof exam.score === "number";
+
+      if (sat && exam.passed) {
+        card.classList.add("done");
+        est.className = "pill done js-status"; est.textContent = "Passed";
+      } else if (all) {
+        est.className = "pill open js-status";
+        est.textContent = attempts > 0 ? "Re-sit available" : "Available";
+      } else {
+        card.classList.add("locked");
+      }
+
+      if (sat) {
+        var el = document.getElementById("examResult");
+        el.innerHTML =
+          '<span class="verdict ' + (exam.passed ? "pass" : "fail") + '">' +
+          (exam.passed ? "Passed" : "Not passed") + '</span>' +
+          'Best score <b>' + exam.score + '%</b>' +
+          (typeof exam.correct === "number" && typeof exam.total === "number"
+            ? ' (' + exam.correct + ' of ' + exam.total + ')' : '') +
+          ' &middot; ' + attempts + (attempts === 1 ? ' attempt' : ' attempts') + ' used';
+        el.hidden = false;
+        document.getElementById("examFocus").hidden = true;
+      }
 
       gate.className = "msg info";
-      gate.innerHTML = all
-        ? "All modules complete. The certification exam is open."
-        : "Modules complete: <b>" + doneCount + " of " + MODULE_KEYS.length + "</b>.";
+      gate.innerHTML = !all
+        ? "Modules complete: <b>" + doneCount + " of " + MODULE_KEYS.length + "</b>."
+        : (sat && exam.passed
+            ? "All modules complete and the certification exam passed."
+            : (attempts > 0
+                ? "All modules complete. You have used <b>" + attempts +
+                  "</b> exam attempt" + (attempts === 1 ? "" : "s") + "."
+                : "All modules complete. The certification exam is open."));
     });
   });
 });
